@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+        <changeSet id="0001" author="liquibase_user">
+            <sql>
+                CREATE SCHEMA IF NOT EXISTS announcement_portal;
+            </sql>
+        </changeSet>
+        <changeSet id="0001-creating-tables" author="diakowski">
+            <createTable tableName="client" schemaName="announcement_portal">
+                <column name="id" autoIncrement="true" type="bigint"/>
+                <column name="username" type="varchar2"/>
+                <column name="name" type="varchar2"/>
+                <column name="last_name" type="varchar2"/>
+                <column name="password" type="varchar2"/>
+                <column name="email" type="varchar2"/>
+                <column name="contact_method_id" type="bigint"/>
+
+            </createTable>
+            <addPrimaryKey tableName="client" columnNames="id"/>
+            <addNotNullConstraint tableName="client" columnName="id"/>
+            <addNotNullConstraint tableName="client" columnName="username"/>
+            <addNotNullConstraint tableName="client" columnName="name"/>
+            <addNotNullConstraint tableName="client" columnName="last_name"/>
+            <addNotNullConstraint tableName="client" columnName="password"/>
+            <addNotNullConstraint tableName="client" columnName="email"/>
+            <addForeignKeyConstraint baseTableName="client" baseColumnNames="contact_method_id"
+                                     constraintName="fk_contact_method_id"
+                                     referencedTableName="contact_method"
+                                     referencedColumnNames="id"/>
+            <createTable tableName="address" schemaName="announcement_portal">
+                <column name="id" type="bigint" autoIncrement="true"/>
+                <column name="street" type="varchar2"/>
+                <column name="street_number" type="varchar2"/>
+                <column name="postcode" type="varchar2"/>
+                <column name="city" type="varchar2"/>
+                <column name="country" type="varchar2"/>
+            </createTable>
+            <addPrimaryKey tableName="address" columnNames="id"/>
+            <addNotNullConstraint tableName="address" columnName="street"/>
+            <addNotNullConstraint tableName="address" columnName="street_number"/>
+            <addNotNullConstraint tableName="address" columnName="postcode"/>
+            <addNotNullConstraint tableName="address" columnName="city"/>
+            <addNotNullConstraint tableName="address" columnName="country"/>
+            <createTable tableName="category" schemaName="announcement_portal">
+                <column name="id" type="bigint" autoIncrement="true"/>
+                <column name="name" type="varchar2"/>
+                <column name="description"/>
+            </createTable>
+            <addPrimaryKey tableName="category" columnNames="id"/>
+            <addNotNullConstraint tableName="category" columnName="id"/>
+            <addNotNullConstraint tableName="category" columnName="name"/>
+            <addNotNullConstraint tableName="category" columnName="description"/>
+            <createTable tableName="picture" schemaName="announcement_portal">
+                <column name="id" type="varchar2"/>
+                <column name="path" type="varchar2"/>
+            </createTable>
+            <addPrimaryKey tableName="picture" columnNames="id"/>
+            <addNotNullConstraint tableName="picture" columnName="id"/>
+            <addNotNullConstraint tableName="picture" columnName="path"/>
+
+            <createTable tableName="announcement" schemaName="announcement_portal">
+                <column name="id" type="bigint" autoIncrement="true"/>
+                <column name="category_id" type="bigint"/>
+                <column name="contact_method_id" type="bigint"/>
+                <column name="publication_time" type="datetime2"/>
+                <column name="content" type="varchar2"/>
+            </createTable>
+            <addPrimaryKey tableName="announcement" columnNames="id"/>
+            <addNotNullConstraint tableName="announcement" columnName="category_id"/>
+            <addNotNullConstraint tableName="announcement" columnName="contact_method_id"/>
+            <addNotNullConstraint tableName="announcement" columnName="publication_time"/>
+            <addNotNullConstraint tableName="announcement" columnName="content"/>
+            <addForeignKeyConstraint baseTableName="announcement" baseColumnNames="category_id"
+                                     constraintName="fk_category_id"
+                                     referencedTableName="category"
+                                     referencedColumnNames="id"/>
+            <addForeignKeyConstraint baseTableName="announcement" baseColumnNames="contact_method_id"
+                                     constraintName="fk_contact_method_id"
+                                     referencedTableName="contact_method"
+                                     referencedColumnNames="id"/>
+        </changeSet>
+</databaseChangeLog>
