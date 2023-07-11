@@ -8,7 +8,6 @@ import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
     @NotNull
     private String street;
@@ -43,43 +42,43 @@ public class Address {
         this.id = id;
     }
 
-    public String getStreet() {
+    public @NotNull String getStreet() {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet(@NotNull String street) {
         this.street = street;
     }
 
-    public String getStreetNumber() {
+    public @NotNull String getStreetNumber() {
         return streetNumber;
     }
 
-    public void setStreetNumber(String streetNumber) {
+    public void setStreetNumber(@NotNull String streetNumber) {
         this.streetNumber = streetNumber;
     }
 
-    public String getPostcode() {
+    public @NotNull String getPostcode() {
         return postcode;
     }
 
-    public void setPostcode(String postcode) {
+    public void setPostcode(@NotNull String postcode) {
         this.postcode = postcode;
     }
 
-    public String getCity() {
+    public @NotNull String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(@NotNull String city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public @NotNull String getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(@NotNull String country) {
         this.country = country;
     }
 }

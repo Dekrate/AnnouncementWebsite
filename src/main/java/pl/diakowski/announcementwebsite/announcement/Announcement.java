@@ -15,7 +15,6 @@ import java.util.Set;
 public class Announcement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
     @NotNull
     @ManyToOne
@@ -66,43 +65,43 @@ public class Announcement {
         this.id = id;
     }
 
-    public Category getCategory() {
+    public @NotNull Category getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(@NotNull Category category) {
         this.category = category;
     }
 
-    public LocalDateTime getPublicationTime() {
+    public @NotNull LocalDateTime getPublicationTime() {
         return publicationTime;
     }
 
-    public void setPublicationTime(LocalDateTime publicationTime) {
+    public void setPublicationTime(@NotNull LocalDateTime publicationTime) {
         this.publicationTime = publicationTime;
     }
 
-    public Client getAuthor() {
+    public @NotNull Client getAuthor() {
         return author;
     }
 
-    public void setAuthor(Client author) {
+    public void setAuthor(@NotNull Client author) {
         this.author = author;
     }
 
-    public ContactMethod getContactMethod() {
+    public @NotNull ContactMethod getContactMethod() {
         return contactMethod;
     }
 
-    public void setContactMethod(ContactMethod contactMethod) {
+    public void setContactMethod(@NotNull ContactMethod contactMethod) {
         this.contactMethod = contactMethod;
     }
 
-    public Set<Picture> getPictures() {
+    public @NotNull Set<Picture> getPictures() {
         return pictures;
     }
 
-    public void setPictures(Set<Picture> pictures) {
+    public void setPictures(@NotNull Set<Picture> pictures) {
         this.pictures = pictures;
     }
     public String getContent() {

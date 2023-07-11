@@ -10,7 +10,6 @@ import pl.diakowski.announcementwebsite.client.Client;
 public class ContactMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Long id;
     @Email
     private String email;
@@ -26,11 +25,12 @@ public class ContactMethod {
     public ContactMethod() {
     }
 
-    public ContactMethod(Long id, String email, String phoneNumber, Address address) {
+    public ContactMethod(Long id, String email, String phoneNumber, Address address, pl.diakowski.announcementwebsite.client.@NotNull Client client) {
         this.id = id;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        Client = client;
     }
 
     public Address getAddress() {
