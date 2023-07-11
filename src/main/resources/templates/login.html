@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Zaloguj</title>
+  <link rel="stylesheet" href="../static/style/register.css" th:href="@{style/register.css}">
+</head>
+<body>
+  <h1>Zaloguj się</h1>
+  <hr>
+  <form action="/login" method="post">
+    <label><p>Login</p>
+      <input type="text" name="username">
+    </label>
+    <label><p>Hasło</p>
+      <input type="password" name="password">
+    </label>
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+    <br />
+    <button type="submit">Wyślij</button>
+  </form>
+</body>
+</html>

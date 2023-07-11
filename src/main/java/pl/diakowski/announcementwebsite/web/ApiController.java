@@ -1,11 +1,12 @@
-package pl.diakowski.announcementwebsite.controller;
+package pl.diakowski.announcementwebsite.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
+
+import java.util.NoSuchElementException;
 
 @RestController
 public class ApiController {
@@ -24,7 +25,7 @@ public class ApiController {
     public ResponseEntity<?> removeUser(@PathVariable Long id) {
         try {
             clientService.deleteClient(id);
-        } catch (NoResourceFoundException e) {
+        } catch (NoSuchElementException e) {
             ResponseEntity.notFound();
         }
         return ResponseEntity.noContent().build();

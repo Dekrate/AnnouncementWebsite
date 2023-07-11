@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import pl.diakowski.announcementwebsite.category.Category;
+import pl.diakowski.announcementwebsite.client.Client;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
 import pl.diakowski.announcementwebsite.picture.Picture;
-import pl.diakowski.announcementwebsite.client.Client;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class Announcement {
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
-    @Column(updatable = false)
+    @Column(unique = true, updatable = false)
     @PastOrPresent
     @NotNull
     private LocalDateTime publicationTime;

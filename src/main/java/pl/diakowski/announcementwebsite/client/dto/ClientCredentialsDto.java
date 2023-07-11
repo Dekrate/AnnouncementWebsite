@@ -7,5 +7,7 @@ import java.util.Set;
  * @param password
  * @param roles
  */
-public record ClientCredentialsDto(String username, String password, Set<String> roles) {
+public record ClientCredentialsDto(String username,
+                                   String password,
+                                   Set<String> roles) {
 }

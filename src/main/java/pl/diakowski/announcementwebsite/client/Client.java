@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import pl.diakowski.announcementwebsite.announcement.Announcement;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,15 +14,21 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     @NotNull
     private String username;
-
     @NotNull
     private String name;
     @NotNull
     private String lastName;
     @NotNull
     private String password;
+    @ManyToMany
+//    @JoinTable(name = "client_role",
+//            joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<ClientRole> clientRoles = new HashSet<>();
+    @Column(unique = true)
     @Email
     @NotNull
     private String email;
@@ -93,5 +100,13 @@ public class Client {
 
     public void setLastName(@NotNull String lastName) {
         this.lastName = lastName;
+    }
+
+    public Set<ClientRole> getClientRoles() {
+        return clientRoles;
+    }
+
+    public void setClientRoles(Set<ClientRole> clientRoles) {
+        this.clientRoles = clientRoles;
     }
 }

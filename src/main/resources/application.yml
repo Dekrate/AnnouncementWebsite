@@ -7,9 +7,12 @@ spring:
   datasource:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
-  autoconfigure:
-    exclude[0]: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-    exclude[1]: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
-
+#  autoconfigure:
+#    exclude[0]: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+#    exclude[1]: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
   jpa:
     show-sql: true
+  security:
+    user:
+      name: admin
+      password: admin

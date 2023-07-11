@@ -11,6 +11,6 @@ public class ClientDtoMapper {
      * @return ClientDto, which is used in the service layer
      */
     static ClientDto map(Client client) {
-        return new ClientDto(client.getId(), client.getUsername(), client.getName(), client.getLastName(), client.getEmail());
+        return new ClientDto(client.getId(), client.getUsername(), client.getName(), client.getLastName(), client.getEmail(), client.getClientRoles());
     }
 }
