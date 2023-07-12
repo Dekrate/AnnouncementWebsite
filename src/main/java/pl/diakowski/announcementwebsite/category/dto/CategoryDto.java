@@ -1,4 +1,4 @@
-package pl.diakowski.announcementwebsite.category;
+package pl.diakowski.announcementwebsite.category.dto;
 
 public record CategoryDto(Long id,
                           String name,

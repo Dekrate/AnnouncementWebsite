@@ -1,7 +1,12 @@
 package pl.diakowski.announcementwebsite.contactmethod.dto;
 
-import pl.diakowski.announcementwebsite.address.Address;
-import pl.diakowski.announcementwebsite.client.Client;
+import pl.diakowski.announcementwebsite.address.dto.AddressDto;
 
-record ContactMethodDto(Long id, String email, String phoneNumber, Address address, Client client) {
+/**
+ * DTO for {@link pl.diakowski.announcementwebsite.contactmethod.ContactMethod}
+ */
+public record ContactMethodDto(Long id,
+                               String email,
+                               String phoneNumber,
+                               AddressDto addressDto) {
 }
