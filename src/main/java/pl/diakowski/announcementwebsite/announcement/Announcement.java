@@ -35,7 +35,7 @@ public class Announcement {
     private ContactMethod contactMethod;
     @NotNull
     @OneToMany
-    @JoinColumn(name = "picture_id")
+    @JoinColumn(name = "announcement_id")
     private Set<Picture> pictures;
     @NotNull
     private String content;

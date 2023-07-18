@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1689677013554-1" author="Acer (generated)">
+        <createTable tableName="address">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_address"/>
+            </column>
+            <column name="contact_method_id" type="BIGINT"/>
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postcode" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-2" author="Acer (generated)">
+        <createTable tableName="announcement">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_announcement"/>
+            </column>
+            <column name="publication_time" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_method_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-3" author="Acer (generated)">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_category"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-4" author="Acer (generated)">
+        <createTable tableName="client">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_client"/>
+            </column>
+            <column name="address_id" type="BIGINT"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-5" author="Acer (generated)">
+        <createTable tableName="client_client_roles">
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_client_clientroles"/>
+            </column>
+            <column name="client_roles_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_client_clientroles"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-6" author="Acer (generated)">
+        <createTable tableName="client_role">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_clientrole"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-7" author="Acer (generated)">
+        <createTable tableName="contact_method">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contactmethod"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="phone_number" type="VARCHAR(255)"/>
+            <column name="address_id" type="BIGINT"/>
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-8" author="Acer (generated)">
+        <createTable tableName="picture">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_picture"/>
+            </column>
+            <column name="path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="announcement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1689677013554-9" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="contact_method_id" baseTableName="address"
+                                 constraintName="FK_ADDRESS_ON_CONTACT_METHOD" referencedColumnNames="id"
+                                 referencedTableName="contact_method"/>
+    </changeSet>
+    <changeSet id="1689677013554-10" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="client"
+                                 constraintName="FK_CLIENT_ON_ADDRESS" referencedColumnNames="id"
+                                 referencedTableName="contact_method"/>
+    </changeSet>
+    <changeSet id="1689677013554-11" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="contact_method"
+                                 constraintName="FK_CONTACTMETHOD_ON_ADDRESS" referencedColumnNames="id"
+                                 referencedTableName="address"/>
+    </changeSet>
+    <changeSet id="1689677013554-12" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="contact_method"
+                                 constraintName="FK_CONTACTMETHOD_ON_CLIENT" referencedColumnNames="id"
+                                 referencedTableName="client"/>
+    </changeSet>
+    <changeSet id="1689677013554-13" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="client_id" baseTableName="client_client_roles"
+                                 constraintName="fk_cliclirol_on_client" referencedColumnNames="id"
+                                 referencedTableName="client"/>
+    </changeSet>
+    <changeSet id="1689677013554-14" author="Acer (generated)">
+        <addForeignKeyConstraint baseColumnNames="client_roles_id" baseTableName="client_client_roles"
+                                 constraintName="fk_cliclirol_on_client_role" referencedColumnNames="id"
+                                 referencedTableName="client_role"/>
+    </changeSet>
+</databaseChangeLog>

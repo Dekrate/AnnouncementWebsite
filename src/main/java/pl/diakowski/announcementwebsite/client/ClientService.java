@@ -37,6 +37,7 @@ public class ClientService {
         client.setLastName(newClientDto.getlastName());
         clientRoleRepository.findByName(USER_ROLE_NAME)
                 .ifPresentOrElse(role -> client.getClientRoles().add(role), () -> {
+                    //clientRoleRepository.save(new ClientRole(USER_ROLE_NAME));
             throw new NoSuchElementException(String.format("%s not found.", USER_ROLE_NAME));
         });
         if (clientRepository.existsByEmail(newClientDto.getEmail())

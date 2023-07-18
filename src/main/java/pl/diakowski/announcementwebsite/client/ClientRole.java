@@ -14,6 +14,14 @@ public class ClientRole {
     @NotNull
     private String name;
 
+    public ClientRole(@NotNull String name) {
+        this.name = name;
+    }
+
+    public ClientRole() {
+
+    }
+
     public Long getId() {
         return id;
     }
