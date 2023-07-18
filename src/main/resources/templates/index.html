@@ -9,13 +9,13 @@
     <header>
         <h1>Serwis ogłoszeniowy</h1>
         <h3>Strona główna</h3>
-        <a th:if="${!authenticated}" href="#" th:href="/login">Zaloguj się</a>
-        <a th:if="${!authenticated}" href="#" th:href="/register">Nie masz konta? Utwórz je teraz!</a>
+        <a th:unless="${authenticated}" th:href="@{/login}" href="#">Zaloguj się</a>
+        <a th:unless="${authenticated}" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
         <p th:if="${authenticated}" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-        <a th:if="${authenticated}" th:text="Wyloguj się" th:href="/logout" href="#"></a>
+        <a th:if="${authenticated}" th:text="Wyloguj się" th:href="@{/logout}" href="#"></a>
     </header>
-    <nav th:remove="all-but-first">
-        <a th:each="${categories}" class="category" th:object="${category}" th:text="" href="#">Praca</a>
+    <nav th:remove="all-but-first" th:each="category: ${categories}" th:unless="${categories.isEmpty()}">
+        <a class="category" th:object="category" th:text="${category.name}" href="#">Praca</a>
         <a href="#" class="category">Zwierzęta</a>
         <a href="#" class="category">Ogólne</a>
         <a href="#" class="category">Sprzedam</a>
@@ -23,7 +23,8 @@
     </nav>
     <hr>
     <main th:remove="all-but-first">
-        <article th:each="${announcements}" th:object="${announcement}">
+        <h3 th:if="${announcements.isEmpty()}">Nie dodano jeszcze żadnych ogłoszeń!</h3>
+        <article th:unless="${announcements.isEmpty()}" th:each="announcement: ${announcements}">
             <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Motoryzacja</a>
             <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
             <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>

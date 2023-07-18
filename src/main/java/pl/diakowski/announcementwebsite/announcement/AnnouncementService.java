@@ -1,13 +1,13 @@
 package pl.diakowski.announcementwebsite.announcement;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.category.CategoryDtoMapper;
 import pl.diakowski.announcementwebsite.category.dto.CategoryDto;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 public class AnnouncementService {
@@ -17,10 +17,16 @@ public class AnnouncementService {
         this.announcementRepository = announcementRepository;
     }
 
-    public Set<AnnouncementDto> findAllByCategoryAndPage(CategoryDto categoryDto, Integer page) {
+    public List<AnnouncementDto> findAllByCategoryAndPage(CategoryDto categoryDto, Integer page) {
         PageRequest pageRequest = PageRequest.of(page, 10);
         return announcementRepository.findAllByCategoryOrderByPublicationTimeDesc(CategoryDtoMapper.map(categoryDto), pageRequest)
                 .stream().map(AnnouncementDtoMapper::map)
-                .collect(Collectors.toSet());
+                .toList();
+    }
+
+    public List<AnnouncementDto> findFiveNewestAnnouncements() {
+        return announcementRepository.findAll(Sort.by(Sort.Direction.DESC, "publicationTime"))
+                .stream().map(AnnouncementDtoMapper::map)
+                .toList();
     }
 }
