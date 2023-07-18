@@ -3,10 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="${announcement.title}">Sprzedam Opla</title>
+  <link rel="stylesheet" href="../static/style/main.css" th:href="@{style/main.css}">
 </head>
 <body>
-  <h1 th:text="Ogłosz">
-
-  </h1>
+  <header>
+    <h1>Serwis ogłoszeniowy</h1>
+    <h3>Strona główna</h3>
+    <a th:if="${!authenticated}" href="#" th:href="/login">Zaloguj się</a>
+    <a th:if="${!authenticated}" href="#" th:href="/register">Nie masz konta? Utwórz je teraz!</a>
+    <p th:if="${authenticated}" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+    <a th:if="${authenticated}" th:text="Wyloguj się" th:href="/logout" href="#"></a>
+  </header>
+  <nav th:remove="all-but-first">
+    <a th:each="${categories}" class="category" th:object="${category}" th:text="" href="#">Praca</a>
+    <a href="#" class="category">Zwierzęta</a>
+    <a href="#" class="category">Ogólne</a>
+    <a href="#" class="category">Sprzedam</a>
+    <a href="#" class="category">Kupię</a>
+  </nav>
+  <hr>
 </body>
 </html>

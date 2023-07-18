@@ -37,14 +37,12 @@ public class Announcement {
     @OneToMany
     @JoinColumn(name = "picture_id")
     private Set<Picture> pictures;
+    @NotNull
     private String content;
+    @NotNull
+    private String title;
 
-    public Announcement(Long id,
-                        @NotNull Category category,
-                        @NotNull LocalDateTime publicationTime,
-                        @NotNull Client author,
-                        @NotNull ContactMethod contactMethod,
-                        @NotNull Set<Picture> pictures, String content) {
+    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, @NotNull Client author, @NotNull ContactMethod contactMethod, @NotNull Set<Picture> pictures, @NotNull String content, @NotNull String title) {
         this.id = id;
         this.category = category;
         this.publicationTime = publicationTime;
@@ -52,6 +50,7 @@ public class Announcement {
         this.contactMethod = contactMethod;
         this.pictures = pictures;
         this.content = content;
+        this.title = title;
     }
 
     public Announcement() {
@@ -104,11 +103,19 @@ public class Announcement {
     public void setPictures(@NotNull Set<Picture> pictures) {
         this.pictures = pictures;
     }
-    public String getContent() {
+    public @NotNull String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(@NotNull String content) {
         this.content = content;
+    }
+
+    public @NotNull String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@NotNull String title) {
+        this.title = title;
     }
 }

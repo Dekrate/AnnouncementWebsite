@@ -48,4 +48,28 @@ public class ContactMethod {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public @NotNull Client getClient() {
+        return Client;
+    }
+
+    public void setClient(@NotNull Client client) {
+        Client = client;
+    }
 }

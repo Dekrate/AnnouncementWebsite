@@ -29,6 +29,12 @@ public class Category {
         this.announcements = announcements;
     }
 
+    public Category(Long id, @NotNull String name, @NotNull String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

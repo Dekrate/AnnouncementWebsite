@@ -12,6 +12,7 @@ import java.util.Set;
  * DTO for {@link pl.diakowski.announcementwebsite.announcement.Announcement}
  */
 public record AnnouncementDto(Long id,
+                              String title,
                               String content,
                               CategoryDto category,
                               LocalDateTime publicationTime,
