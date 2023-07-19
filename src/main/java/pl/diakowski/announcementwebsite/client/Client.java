@@ -23,7 +23,7 @@ public class Client {
     private String lastName;
     @NotNull
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
 //    @JoinTable(name = "client_role",
 //            joinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -32,7 +32,7 @@ public class Client {
     @Email
     @NotNull
     private String email;
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private Set<Announcement> announcements;
     @OneToOne
     @JoinColumn(name = "address_id")

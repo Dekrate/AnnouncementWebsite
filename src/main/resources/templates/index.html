@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="https://www.thymeleaf.org/">
+<html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -12,13 +12,16 @@
         <header>
             <h1>Serwis ogłoszeniowy</h1>
             <h3>Strona główna</h3>
-            <a th:unless="${authenticated}" th:href="@{/login}" href="#">Zaloguj się</a>
-            <a th:unless="${authenticated}" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
-            <p th:if="${authenticated}" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-            <a th:if="${authenticated}" th:text="Wyloguj się" th:href="@{/logout}" href="#"></a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
+            <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+<!--            <form method="post" th:action="@{/logout}">-->
+<!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
+                <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+<!--            </form>-->
         </header>
-        <nav th:remove="all-but-first" th:each="category: ${categories}" th:unless="${categories.isEmpty()}">
-            <a class="category" th:object="category" th:text="${category.name}" href="#">Praca</a>
+        <nav class="navigation" th:remove="all-but-first">
+            <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
             <a href="#" class="category">Zwierzęta</a>
             <a href="#" class="category">Ogólne</a>
             <a href="#" class="category">Sprzedam</a>
@@ -27,7 +30,7 @@
         <hr>
         <main th:remove="all-but-first">
             <h3 th:if="${announcements.isEmpty()}">Nie dodano jeszcze żadnych ogłoszeń!</h3>
-            <article th:unless="${announcements.isEmpty()}" th:each="announcement: ${announcements}">
+            <article th:each="announcement: ${announcements}">
                 <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Motoryzacja</a>
                 <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
                 <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>

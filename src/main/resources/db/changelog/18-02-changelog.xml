@@ -5,8 +5,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
     <changeSet id="2" author="Mikołaj Diakowski">
-        <sql>
-            INSERT INTO client_role VALUES (1, 'ADMIN'), (2, 'USER');
-        </sql>
+        <insert tableName="client_role">
+            <column name="id">1</column>
+            <column name="name">ADMIN</column>
+        </insert>
+        <insert tableName="client_role">
+            <column name="id">2</column>
+            <column name="name">USER</column>
+        </insert>
     </changeSet>
 </databaseChangeLog>

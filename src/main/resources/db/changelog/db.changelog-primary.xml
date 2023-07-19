@@ -165,4 +165,5 @@
                                  constraintName="fk_cliclirol_on_client_role" referencedColumnNames="id"
                                  referencedTableName="client_role"/>
     </changeSet>
+    <include file="db/changelog/18-02-changelog.xml"/>
 </databaseChangeLog>

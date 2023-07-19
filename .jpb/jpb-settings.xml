@@ -12,4 +12,13 @@
       </database-info>
     </database-infos>
   </component>
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit name="Default">
+        <packages>
+          <package value="pl.diakowski.announcementwebsite" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
 </project>

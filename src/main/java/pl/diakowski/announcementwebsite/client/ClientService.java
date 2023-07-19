@@ -30,6 +30,8 @@ public class ClientService {
     @Transactional
     public ClientDto addClient(NewClientDto newClientDto) throws EntityExistsException, NoSuchElementException {
         Client client = new Client();
+        if (newClientDto.getUsername().equals("anonymousUser"))
+            throw new IllegalArgumentException("It's forbidden to use anonymousUser");
         client.setUsername(newClientDto.getUsername());
         client.setPassword(passwordEncoder.encode(newClientDto.getPassword()));
         client.setEmail(newClientDto.getEmail());

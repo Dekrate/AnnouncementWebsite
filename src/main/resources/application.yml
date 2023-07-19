@@ -1,26 +1,34 @@
+
 spring:
   docker:
     compose:
       enabled: false
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    change-log: classpath:db/changelog/db.changelog-primary.xml
   datasource:
-    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
+    #url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:mysql://localhost:3306/announcement-application?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: haslo
+    hikari:
+      max-lifetime: 600000
   #  autoconfigure:
 #    exclude[0]: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 #    exclude[1]: org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
-    database-platform: org.hibernate.dialect.H2Dialect
-  security:
-    user:
-      name: admin
-      password: admin
-  h2:
-    console:
-      enabled: true
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false #disable queries in terminal during start of application
+
+#  h2:
+#    console:
+#      enabled: true
+  session:
+    jdbc:
+      initialize-schema: always
+server:
+  port: 8080

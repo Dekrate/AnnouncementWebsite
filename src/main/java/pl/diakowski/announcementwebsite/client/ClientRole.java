@@ -19,7 +19,6 @@ public class ClientRole {
     }
 
     public ClientRole() {
-
     }
 
     public Long getId() {
