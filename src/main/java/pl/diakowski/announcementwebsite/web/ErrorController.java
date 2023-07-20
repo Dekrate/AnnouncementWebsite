@@ -10,7 +10,11 @@ public class ErrorController {
 		return "403";
 	}
 
-	@GetMapping("/404")
+	/**
+	 * Handling error 404.
+	 * @return 404 page.
+	 */
+	@GetMapping("/error")
 	public String notFound() {
 		return "404";
 	}

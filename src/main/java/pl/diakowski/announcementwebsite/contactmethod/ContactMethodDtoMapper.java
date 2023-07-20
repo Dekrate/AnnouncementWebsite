@@ -10,4 +10,11 @@ public class ContactMethodDtoMapper {
                 contactMethod.getPhoneNumber(),
                 AddressDtoMapper.map(contactMethod.getAddress()));
     }
+
+    public static ContactMethod map(ContactMethodDto contactMethodDto) {
+        return new ContactMethod(contactMethodDto.id(),
+                contactMethodDto.email(),
+                contactMethodDto.phoneNumber(),
+                AddressDtoMapper.map(contactMethodDto.addressDto()));
+    }
 }

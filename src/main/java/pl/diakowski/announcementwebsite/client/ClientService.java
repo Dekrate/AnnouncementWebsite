@@ -2,6 +2,7 @@ package pl.diakowski.announcementwebsite.client;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
@@ -58,13 +59,19 @@ public class ClientService {
     }
 
     @Transactional
-    public void changePassword(ClientDto dto, String newPassword) throws NoSuchElementException {
+    public void changePassword(ClientDto dto, String newPassword) throws UsernameNotFoundException {
         Optional<Client> optionalClient = clientRepository.findById(dto.id());
         optionalClient.ifPresentOrElse(client -> {
             client.setPassword(passwordEncoder.encode(newPassword));
             clientRepository.save(client);
         }, () -> {
-            throw new NoSuchElementException("No such element found");
+            throw new UsernameNotFoundException("No such element found");
         });
+    }
+
+    public ClientDto findByUsername(String name) {
+        return clientRepository.findByUsername(name)
+                .map(ClientDtoMapper::map)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

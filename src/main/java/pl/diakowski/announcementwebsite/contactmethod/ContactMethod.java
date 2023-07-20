@@ -22,7 +22,7 @@ public class ContactMethod {
     @NotNull
     private Client Client;
 
-    public ContactMethod() {
+    public ContactMethod(Long id, String email, String phoneNumber, Address map) {
     }
 
     public ContactMethod(Long id, String email, String phoneNumber, Address address, pl.diakowski.announcementwebsite.client.@NotNull Client client) {
@@ -32,6 +32,17 @@ public class ContactMethod {
         this.address = address;
         Client = client;
     }
+
+    public ContactMethod(String email, String phoneNumber, Address address, @NotNull Client client) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        Client = client;
+    }
+
+    public ContactMethod() {
+    }
+
 
     public Address getAddress() {
         return address;

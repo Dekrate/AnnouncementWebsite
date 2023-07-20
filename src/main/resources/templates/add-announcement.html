@@ -1,34 +1,46 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta charset="UTF-8">
-    <title>Strona główna</title>
+    <title>Dodaj ogłoszenie - Serwis ogłoszeniowy</title>
     <link rel="stylesheet" href="../static/style/main.css" th:href="@{style/main.css}">
-</head>
-<body>
-<header>
+  </head>
+  <body>
+  <header>
     <h1>Serwis ogłoszeniowy</h1>
-    <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
-    <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
+    <h3>Strona główna</h3>
     <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-    <!--            <form method="post" th:action="@{/logout}">-->
-    <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
     <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
     <!--            </form>-->
-</header>
-<nav class="navigation" th:remove="all-but-first">
+  </header>
+  <nav class="navigation" th:remove="all-but-first">
     <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
     <a href="#" class="category">Zwierzęta</a>
     <a href="#" class="category">Ogólne</a>
     <a href="#" class="category">Sprzedam</a>
     <a href="#" class="category">Kupię</a>
-</nav>
-<hr>
-<h1>403 Error!</h1>
-<h3>Nie masz uprawnień, aby otworzyć tę witrynę.</h3>
-<a th:href="@{/}" href="/">Powróć na stronę główną.</a>
-</body>
+  </nav>
+  <form action="new-announcement" method="post">
+    <label>Wybierz kategorię<br />
+      <select name="category">
+        <option th:remove="all-but-first" th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}" >Samochody</option>
+        <option value="animals">Zwierzęta</option>
+      </select>
+    </label>
+    <label>
+      <input type="text" name="title" placeholder="Tytuł">
+    </label>
+    <label>
+      <textarea name="content" cols="30" rows="10" placeholder="Treść ogłoszenia"></textarea>
+    </label>
+    <label>Dodaj obrazki w formacie jpg lub png<br />
+      <input type="file" name="pictures" accept="image/png, image/jpeg" multiple>
+    </label>
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+    <button type="submit">Dodaj</button>
+  </form>
+  </body>
 </html>

@@ -14,7 +14,7 @@ public class ClientRole {
     @NotNull
     private String name;
 
-    public ClientRole(@NotNull String name) {
+    public ClientRole(Long id, @NotNull String name) {
         this.name = name;
     }
 
