@@ -7,7 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
+import pl.diakowski.announcementwebsite.client.exception.OldPasswordDoesNotMatchException;
+import pl.diakowski.announcementwebsite.client.exception.PasswordsDoNotMatchException;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -48,6 +51,10 @@ public class ClientService {
             throw new EntityExistsException("This account exists!");
         }
         clientRepository.save(client);
+        ArrayList<String> stringArrayList = new ArrayList<String>();
+        for (String s : stringArrayList) {
+            
+        }
         return ClientDtoMapper.map(client);
     }
 
@@ -59,7 +66,8 @@ public class ClientService {
     }
 
     @Transactional
-    public void changePassword(ClientDto dto, String newPassword) throws UsernameNotFoundException {
+    public void changePassword(ClientDto dto, String newPassword, String password, String repeatedNewPassword)
+            throws OldPasswordDoesNotMatchException, PasswordsDoNotMatchException {
         Optional<Client> optionalClient = clientRepository.findById(dto.id());
         optionalClient.ifPresentOrElse(client -> {
             client.setPassword(passwordEncoder.encode(newPassword));
@@ -69,7 +77,7 @@ public class ClientService {
         });
     }
 
-    public ClientDto findByUsername(String name) {
+    public ClientDto findByUsername(String name) throws NullPointerException {
         return clientRepository.findByUsername(name)
                 .map(ClientDtoMapper::map)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));

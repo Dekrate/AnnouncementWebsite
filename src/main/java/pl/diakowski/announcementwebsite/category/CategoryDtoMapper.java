@@ -7,7 +7,7 @@ public class CategoryDtoMapper {
         return new Category(categoryDto.id(), categoryDto.name(), categoryDto.description());
     }
 
-    public static CategoryDto map(Category category) {
-        return new CategoryDto(category.getId(), category.getName(), category.getDescription());
-    }
+	public static CategoryDto map(Category category) {
+		return new CategoryDto(category.getId(), category.getName(), category.getDescription());
+	}
 }

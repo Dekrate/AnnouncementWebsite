@@ -8,6 +8,9 @@ import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
 
 import java.util.NoSuchElementException;
 
+/**
+ * REST API controller
+ */
 @RestController
 public class ApiController {
     private final ClientService clientService;

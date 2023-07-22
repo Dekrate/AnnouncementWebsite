@@ -22,9 +22,9 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/style/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/category")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/announcement")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/add-announcement", "GET")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/change-password")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/login")).anonymous()
-//                .requestMatchers(HttpMethod.)
                 .requestMatchers(new AntPathRequestMatcher("/register")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/not-found")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/403")).permitAll());

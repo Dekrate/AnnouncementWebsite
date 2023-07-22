@@ -14,7 +14,7 @@ public class ClientDtoMapper {
      * @param client Entity which will be mapped
      * @return ClientDto, which is used in the service layer
      */
-    public static ClientDto map(Client client) {
+    public static ClientDto map(Client client) throws NullPointerException {
         return new ClientDto(client.getId(),
                 client.getUsername(),
                 client.getName(),

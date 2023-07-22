@@ -10,11 +10,13 @@
     </head>
     <body>
         <header>
-            <h1>Serwis ogłoszeniowy</h1>
+            <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
             <h3>Strona główna</h3>
             <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
             <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
             <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+            <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
+            <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
 <!--            <form method="post" th:action="@{/logout}">-->
 <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
                 <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>

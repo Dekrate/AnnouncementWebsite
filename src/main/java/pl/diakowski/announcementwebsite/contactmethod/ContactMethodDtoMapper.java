@@ -5,7 +5,7 @@ import pl.diakowski.announcementwebsite.contactmethod.dto.ContactMethodDto;
 
 public class ContactMethodDtoMapper {
     public static ContactMethodDto map(ContactMethod contactMethod) {
-        return new ContactMethodDto(contactMethod.getId(),
+        return contactMethod == null ? null : new ContactMethodDto(contactMethod.getId(),
                 contactMethod.getEmail(),
                 contactMethod.getPhoneNumber(),
                 AddressDtoMapper.map(contactMethod.getAddress()));

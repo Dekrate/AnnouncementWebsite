@@ -16,9 +16,9 @@ public class Announcement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
     @ManyToOne
     @JoinColumn(name="category_id")
+    @NotNull
     private Category category;
     @Column(unique = true, updatable = false)
     @PastOrPresent
@@ -26,7 +26,6 @@ public class Announcement {
     private LocalDateTime publicationTime;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    @NotNull
     private Client author;
 
 
@@ -42,7 +41,7 @@ public class Announcement {
     @NotNull
     private String title;
 
-    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, @NotNull Client author, @NotNull ContactMethod contactMethod, @NotNull Set<Picture> pictures, @NotNull String content, @NotNull String title) {
+    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, @NotNull Set<Picture> pictures, @NotNull String content, @NotNull String title) {
         this.id = id;
         this.category = category;
         this.publicationTime = publicationTime;
@@ -80,11 +79,11 @@ public class Announcement {
         this.publicationTime = publicationTime;
     }
 
-    public @NotNull Client getAuthor() {
+    public Client getAuthor() {
         return author;
     }
 
-    public void setAuthor(@NotNull Client author) {
+    public void setAuthor(Client author) {
         this.author = author;
     }
 

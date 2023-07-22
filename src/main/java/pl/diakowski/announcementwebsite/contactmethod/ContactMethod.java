@@ -20,7 +20,7 @@ public class ContactMethod {
 
     @OneToOne
     @NotNull
-    private Client Client;
+    private Client client;
 
     public ContactMethod(Long id, String email, String phoneNumber, Address map) {
     }
@@ -30,14 +30,14 @@ public class ContactMethod {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        Client = client;
+        this.client = client;
     }
 
     public ContactMethod(String email, String phoneNumber, Address address, @NotNull Client client) {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        Client = client;
+        this.client = client;
     }
 
     public ContactMethod() {
@@ -77,10 +77,10 @@ public class ContactMethod {
     }
 
     public @NotNull Client getClient() {
-        return Client;
+        return client;
     }
 
     public void setClient(@NotNull Client client) {
-        Client = client;
+        this.client = client;
     }
 }
