@@ -18,7 +18,7 @@ public class AnnouncementDtoMapper {
                 ClientDtoMapper.map(announcement.getAuthor()),
                 ContactMethodDtoMapper.map(announcement.getContactMethod()),
                 announcement.getPictures() // czy on próbuje mapować zbiór do pojedynczego obiektu?
-                        .stream().map(PictureDtoMapper::map)
+                        .stream().parallel().map(PictureDtoMapper::map)
                         .collect(Collectors.toSet()));
     }
 }

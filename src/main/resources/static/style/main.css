@@ -41,3 +41,15 @@ nav {
 label {
     display: block;
 }
+
+#content {
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+}
+
+.note-editor {
+    margin: auto;
+    text-align: left;
+}

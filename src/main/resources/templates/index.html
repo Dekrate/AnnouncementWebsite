@@ -48,7 +48,7 @@
                     <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
                 </section>
             </article>
-            <article th:each="${announcements}" th:object="${announcement}">
+            <article th:each="announcement: ${announcements}">
                 <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Dam pracę</a>
                 <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 22 października 2023 r. o godzinie 10:30</p>
                 <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>

@@ -1,13 +1,22 @@
 package pl.diakowski.announcementwebsite.config;
 
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import pl.diakowski.announcementwebsite.web.AnnouncementController;
 
+
+/**
+ * Class created to configure security of the website.
+ */
 @Configuration
 public class SecurityConfiguration {
     /**
@@ -17,6 +26,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry
                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/assets/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/static/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/index")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/js/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/style/**")).permitAll()
@@ -39,12 +52,22 @@ public class SecurityConfiguration {
 //        http.headers(config -> config.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         return http.build();
     }
+
+
     /**
-     * @return PasswordEncoder, which is used in ClientService.<br />
-     * The method was used here to create a bean of PasswordEncoder.
+     * @return {@link DelegatingPasswordEncoder}, which is used in ClientService.<br />
      */
     @Bean
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
+    /**
+     * @return {@link HtmlPolicyBuilder}, which is used in {@link AnnouncementController} to allow some HTML tags.<br />
+     */
+    @Bean
+    PolicyFactory policyFactory() {
+        return Sanitizers.BLOCKS;
+    }
+
 }

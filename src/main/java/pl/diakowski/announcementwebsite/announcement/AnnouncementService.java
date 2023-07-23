@@ -55,7 +55,6 @@ public class AnnouncementService {
     public List<AnnouncementDto> findAllByClient(ClientDto clientDto, Integer page) {
         Page<Announcement> announcements = announcementRepository.findByAuthor(ClientDtoMapper.map(clientDto),
                 PageRequest.of(page, 10));
-        return announcements.stream().map(AnnouncementDtoMapper::map)
-                .sorted(Comparator.comparing(AnnouncementDto::publicationTime).reversed()).toList();
+        return announcements.stream().parallel().map(AnnouncementDtoMapper::map).sorted(Comparator.comparing(AnnouncementDto::publicationTime).reversed()).toList();
     }
 }

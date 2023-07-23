@@ -23,7 +23,6 @@ public class AnnouncementController {
 	private final AnnouncementService announcementService;
 	private final ClientService clientService;
 	private final CategoryService categoryService;
-
 	public AnnouncementController(AnnouncementService announcementService,
 	                              ClientService clientService,
 	                              CategoryService categoryService) {
@@ -55,7 +54,10 @@ public class AnnouncementController {
 		ClientDto clientDto = clientService.findByUsername(authentication.getName());
 		PhoneNumberUtil phoneNumberChecker = PhoneNumberUtil.getInstance();
 		Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
+
 		phoneNumber.setRawInput(clientDto.contactMethodDto().phoneNumber());
+
+
 		try {
 			phoneNumberChecker.isValidNumber(phoneNumber);
 			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, clientDto);
