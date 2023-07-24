@@ -33,9 +33,9 @@ public class Client {
     @NotNull
     private String email;
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-    private Set<Announcement> announcements;
-    @OneToOne
-    @JoinColumn(name = "address_id")
+    private Set<Announcement> announcements = new HashSet<>();
+    @OneToOne(mappedBy = "client")
+    @JoinColumn
     private ContactMethod contactMethod;
 
     public Long getId() {
@@ -106,7 +106,7 @@ public class Client {
         return clientRoles;
     }
 
-    public void setClientRoles(Set<ClientRole> clientRoles) {
+    public void setClientRoles(HashSet<ClientRole> clientRoles) {
         this.clientRoles = clientRoles;
     }
 }

@@ -10,7 +10,6 @@ import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
 import pl.diakowski.announcementwebsite.client.exception.OldPasswordDoesNotMatchException;
 import pl.diakowski.announcementwebsite.client.exception.PasswordsDoNotMatchException;
 
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -49,11 +48,6 @@ public class ClientService {
         if (clientRepository.existsByEmail(newClientDto.getEmail())
                 || clientRepository.existsByUsername(newClientDto.getUsername())) {
             throw new EntityExistsException("This account exists!");
-        }
-        clientRepository.save(client);
-        ArrayList<String> stringArrayList = new ArrayList<String>();
-        for (String s : stringArrayList) {
-            
         }
         return ClientDtoMapper.map(client);
     }

@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/assets/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/client/**")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/static/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/index")).permitAll()
@@ -35,8 +36,7 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/style/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/category")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/announcement")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/add-announcement", "GET")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/change-password")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/add-announcement")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/login")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/register")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/not-found")).permitAll()
@@ -69,5 +69,4 @@ public class SecurityConfiguration {
     PolicyFactory policyFactory() {
         return Sanitizers.BLOCKS;
     }
-
 }

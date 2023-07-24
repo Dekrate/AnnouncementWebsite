@@ -15,17 +15,15 @@ public class ContactMethod {
     private String email;
     private String phoneNumber;
     @OneToOne
-    @JoinColumn(name = "address_id")
     private Address address;
 
     @OneToOne
-    @NotNull
+    @NotNull(message = "Client cannot be null")
     private Client client;
 
-    public ContactMethod(Long id, String email, String phoneNumber, Address map) {
-    }
 
-    public ContactMethod(Long id, String email, String phoneNumber, Address address, pl.diakowski.announcementwebsite.client.@NotNull Client client) {
+
+    public ContactMethod(Long id, String email, String phoneNumber, Address address, @NotNull Client client) {
         this.id = id;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -42,7 +40,6 @@ public class ContactMethod {
 
     public ContactMethod() {
     }
-
 
     public Address getAddress() {
         return address;

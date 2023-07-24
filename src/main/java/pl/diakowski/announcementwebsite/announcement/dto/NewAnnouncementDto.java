@@ -1,11 +1,39 @@
 package pl.diakowski.announcementwebsite.announcement.dto;
 
-import org.springframework.web.multipart.MultipartFile;
+public class NewAnnouncementDto {
+	private String category;
+	private String title;
+	private String content;
 
-import java.util.Set;
+	public NewAnnouncementDto(String category,
+	                          String title,
+	                          String content) {
+		this.category = category;
+		this.title = title;
+		this.content = content;
+	}
 
-public record NewAnnouncementDto(String category,
-                                 String title,
-                                 Set<MultipartFile> pictures,
-                                 String content) {
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }

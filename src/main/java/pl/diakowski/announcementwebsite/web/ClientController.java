@@ -1,6 +1,5 @@
 package pl.diakowski.announcementwebsite.web;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +15,7 @@ import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.OldPasswordDoesNotMatchException;
 import pl.diakowski.announcementwebsite.client.exception.PasswordsDoNotMatchException;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethodService;
+import pl.diakowski.announcementwebsite.contactmethod.dto.ContactMethodDto;
 
 @Controller
 public class ClientController {
@@ -36,8 +36,7 @@ public class ClientController {
 
 	@GetMapping("/client")
 	public String client(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		ClientDto client = clientService.findByUsername(authentication.getName());
+		ClientDto client = getClientDto();
 		model.addAttribute("client", client);
 		model.addAttribute("announcements", announcementService.findAllByClient(client, 0)); // page 0 implies the first page
 		return "client";
@@ -45,8 +44,7 @@ public class ClientController {
 
 	@GetMapping("/client/announcements")
 	public String announcements(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		ClientDto client = clientService.findByUsername(authentication.getName());
+		ClientDto client = getClientDto();
 		model.addAttribute("client", client);
 		model.addAttribute("announcements", announcementService.findAllByClient(client, 0)); // page 0 implies the first page
 		return "user-announcements";
@@ -54,21 +52,33 @@ public class ClientController {
 
 	@GetMapping("/client/contact-method")
 	public String contactMethod(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		ClientDto client = clientService.findByUsername(authentication.getName());
+		ClientDto client = getClientDto();
 		model.addAttribute("client", client);
-		try {
-			model.addAttribute("contactMethods", contactMethodService.findByClient(client));
-		} catch (EntityNotFoundException e) {
-			model.addAttribute("contactMethods", null);
-		}
 		return "contact-method";
+	}
+
+	/**
+	 * @return ClientDto of currently logged-in user
+	 */
+	private ClientDto getClientDto() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return clientService.findByUsername(authentication.getName());
+	}
+
+	@PostMapping("/client/contact-method")
+	public RedirectView changeContactMethod(ContactMethodDto contactMethodDto, Model model) {
+		RedirectView redirectView = new RedirectView();
+		ClientDto clientDto = getClientDto();
+		redirectView.setUrl("/client/contact-method");
+		ContactMethodDto savedContactMethod = contactMethodService.addOrChangeContactMethod(contactMethodDto, clientDto);
+		redirectView.addStaticAttribute("success", "Dodano nowy sposób kontaktu. Zmodyfikowane dane są w formularzu.");
+		redirectView.setHttp10Compatible(false);
+		return redirectView;
 	}
 
 	@GetMapping("/client/change-password")
 	public String changePasswordWebsite(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		ClientDto client = clientService.findByUsername(authentication.getName());
+		ClientDto client = getClientDto();
 		model.addAttribute("client", client);
 		return "change-password";
 	}
@@ -77,8 +87,7 @@ public class ClientController {
 	@PostMapping("/client/change-password")
 	public RedirectView changePassword(Model model, String oldPassword, String newPassword, Errors newPasswordError,
 	                                   String repeatedNewPassword, Errors repeatedNewPasswordError) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		ClientDto client = clientService.findByUsername(authentication.getName());
+		ClientDto client = getClientDto();
 		RedirectView redirectView = new RedirectView();
 		try {
 			clientService.changePassword(client, oldPassword, newPassword, repeatedNewPassword);

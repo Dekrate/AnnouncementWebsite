@@ -4,6 +4,7 @@ import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.dto.ClientRoleDto;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethodDtoMapper;
 
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -37,10 +38,14 @@ public class ClientDtoMapper {
         client.setName(clientDto.name());
         client.setLastName(clientDto.lastName());
         client.setEmail(clientDto.email());
-        client.setClientRoles(clientDto.roles().stream()
+        client.setClientRoles((HashSet<ClientRole>) clientDto.roles().stream()
                 .map(ClientDtoMapper::map)
                 .collect(Collectors.toSet()));
-        client.setContactMethod(ContactMethodDtoMapper.map(clientDto.contactMethodDto()));
+        try {
+            client.setContactMethod(ContactMethodDtoMapper.map(clientDto.contactMethodDto()));
+        } catch (NullPointerException e) {
+            client.setContactMethod(null);
+        }
         return client;
     }
 

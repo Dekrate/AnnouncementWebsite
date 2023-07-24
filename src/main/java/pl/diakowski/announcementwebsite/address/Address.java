@@ -34,6 +34,32 @@ public class Address {
         this.country = country;
     }
 
+    public Address(@NotNull String street,
+                   @NotNull String streetNumber,
+                   @NotNull String postcode,
+                   @NotNull String city,
+                   @NotNull String country) {
+        this.street = street;
+        this.streetNumber = streetNumber;
+        this.postcode = postcode;
+        this.city = city;
+        this.country = country;
+    }
+
+    public Address(@NotNull String street,
+                   @NotNull String streetNumber,
+                   @NotNull String postcode,
+                   @NotNull String city,
+                   @NotNull String country,
+                   ContactMethod contactMethod) {
+        this.street = street;
+        this.streetNumber = streetNumber;
+        this.postcode = postcode;
+        this.city = city;
+        this.country = country;
+        this.contactMethod = contactMethod;
+    }
+
     public Long getId() {
         return id;
     }

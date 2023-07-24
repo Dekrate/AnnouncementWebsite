@@ -26,8 +26,8 @@
       <a href="#" class="category">Kupię</a>
     </nav>
     <main>
-      <a th:href="@{/add-contact-method}" th:if="${client.contactMethodDto == null}" th:text="${error}"></a>
-      <form action="/new-announcement" method="post">
+      <a th:href="@{/client/contact-method}" th:if="${client.contactMethodDto == null}" th:text="${error}"></a>
+      <form action="/add-announcement" method="post" enctype="multipart/form-data">
         <label>Wybierz kategorię<br />
           <select name="category">
             <option th:remove="all-but-first" th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}" >Samochody</option>

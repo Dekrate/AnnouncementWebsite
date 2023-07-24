@@ -1,20 +1,19 @@
 package pl.diakowski.announcementwebsite.contactmethod;
 
-import pl.diakowski.announcementwebsite.address.AddressDtoMapper;
 import pl.diakowski.announcementwebsite.contactmethod.dto.ContactMethodDto;
 
 public class ContactMethodDtoMapper {
     public static ContactMethodDto map(ContactMethod contactMethod) {
         return contactMethod == null ? null : new ContactMethodDto(contactMethod.getId(),
                 contactMethod.getEmail(),
-                contactMethod.getPhoneNumber(),
-                AddressDtoMapper.map(contactMethod.getAddress()));
+                contactMethod.getPhoneNumber());
     }
 
-    public static ContactMethod map(ContactMethodDto contactMethodDto) {
-        return new ContactMethod(contactMethodDto.id(),
-                contactMethodDto.email(),
-                contactMethodDto.phoneNumber(),
-                AddressDtoMapper.map(contactMethodDto.addressDto()));
-    }
+
+	public static ContactMethod map(ContactMethodDto contactMethodDto) {
+		ContactMethod contactMethod = new ContactMethod();
+		contactMethod.setEmail(contactMethodDto.getEmail());
+		contactMethod.setPhoneNumber(contactMethodDto.getPhoneNumber());
+		return contactMethod;
+	}
 }

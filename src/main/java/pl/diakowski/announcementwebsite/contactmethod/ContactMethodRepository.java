@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface ContactMethodRepository extends CrudRepository<ContactMethod, Long> {
 	Optional<ContactMethod> findByClient(Client client);
+	
 
 
 }

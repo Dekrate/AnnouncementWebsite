@@ -9,6 +9,7 @@ import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
 import pl.diakowski.announcementwebsite.picture.Picture;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,26 +29,24 @@ public class Announcement {
     @JoinColumn(name = "author_id")
     private Client author;
 
-
     @NotNull
     @OneToOne
     private ContactMethod contactMethod;
-    @NotNull
+
     @OneToMany
     @JoinColumn(name = "announcement_id")
-    private Set<Picture> pictures;
+    private Set<Picture> pictures = new HashSet<>();
     @NotNull
     private String content;
     @NotNull
     private String title;
 
-    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, @NotNull Set<Picture> pictures, @NotNull String content, @NotNull String title) {
+    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, @NotNull String content, @NotNull String title) {
         this.id = id;
         this.category = category;
         this.publicationTime = publicationTime;
         this.author = author;
         this.contactMethod = contactMethod;
-        this.pictures = pictures;
         this.content = content;
         this.title = title;
     }
@@ -95,11 +94,11 @@ public class Announcement {
         this.contactMethod = contactMethod;
     }
 
-    public @NotNull Set<Picture> getPictures() {
+    public Set<Picture> getPictures() {
         return pictures;
     }
 
-    public void setPictures(@NotNull Set<Picture> pictures) {
+    public void setPictures(Set<Picture> pictures) {
         this.pictures = pictures;
     }
     public @NotNull String getContent() {

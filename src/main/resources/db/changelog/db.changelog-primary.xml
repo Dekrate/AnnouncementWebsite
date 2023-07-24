@@ -167,4 +167,5 @@
     </changeSet>
     <include file="db/changelog/18-02-changelog.xml"/>
     <include file="db/changelog/22-01-changelog.xml"/>
+    <include file="db/changelog/24-01-changelog.xml"/>
 </databaseChangeLog>

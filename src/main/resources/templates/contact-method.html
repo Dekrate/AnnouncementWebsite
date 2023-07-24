@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta charset="UTF-8">
+  <title>Dodaj metodę kontaktu - Serwis ogłoszeniowy</title>
+  <link rel="stylesheet" href="../static/style/main.css" th:href="@{../style/main.css}">
+</head>
+<body>
+<header>
+  <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
+  <h3>Strona główna</h3>
+  <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+  <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+  <!--            </form>-->
+</header>
+<main>
+  <p style="color: lightgreen" th:text="${success != null} ? ${success}"></p>
+  <form action="/client/contact-method" method="post">
+    <label>
+      <input th:value="${client.contactMethodDto != null} ? ${client.contactMethodDto.email}" type="email" name="email" placeholder="Adres email">
+    </label>
+    <label>
+      <input type="tel" th:value="${client.contactMethodDto != null} ? ${client.contactMethodDto.phoneNumber}" name="phoneNumber" placeholder="Numer telefonu">
+    </label>
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+    <button type="submit">Dodaj</button>
+  </form>
+</main>
+</body>
+
+</html>
