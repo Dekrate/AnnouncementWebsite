@@ -4,7 +4,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
@@ -85,16 +84,15 @@ public class ClientController {
 
 	// TODO post mappings
 	@PostMapping("/client/change-password")
-	public RedirectView changePassword(Model model, String oldPassword, String newPassword, Errors newPasswordError,
-	                                   String repeatedNewPassword, Errors repeatedNewPasswordError) {
+	public RedirectView changePassword(Model model, String oldPassword, String newPassword, String repeatedNewPassword) {
 		ClientDto client = getClientDto();
 		RedirectView redirectView = new RedirectView();
 		try {
 			clientService.changePassword(client, oldPassword, newPassword, repeatedNewPassword);
 		} catch (OldPasswordDoesNotMatchException e) {
-			newPasswordError.rejectValue("newPassword", "newPassword", "New password cannot be the same as the old one");
+			model.addAttribute("error", "Old password does not match");
 		} catch (PasswordsDoNotMatchException e) {
-			repeatedNewPasswordError.rejectValue("repeatedNewPassword", "repeatedNewPassword", "Passwords does not match");
+			model.addAttribute("error", "Passwords do not match");
 		}
 		return null; // TODO return redirectView
 	}
