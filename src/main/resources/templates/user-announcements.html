@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
   <meta charset="UTF-8">
-  <title>Strona główna</title>
+  <title>Ogłoszenia użytkownika - Serwis ogłoszeniowy</title>
   <link rel="stylesheet" href="../static/style/main.css" th:href="@{style/main.css}">
 </head>
 <body>
 <header>
   <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
   <h3>Strona główna</h3>
-  <a th:if="${!authenticated}" href="#" th:href="/login">Zaloguj się</a>
-  <a th:if="${!authenticated}" href="#" th:href="/register">Nie masz konta? Utwórz je teraz!</a>
-  <p th:if="${authenticated}" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-  <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
-  <a th:if="${authenticated}" th:text="Wyloguj się" th:href="/logout" href="#"></a>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
+  <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+  <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
   <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
+  <!--            <form method="post" th:action="@{/logout}">-->
+  <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
+  <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
+  <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+  <!--            </form>-->
 </header>
-<nav th:remove="all-but-first">
-  <a th:each="${categories}" class="category" th:object="${category}" th:text="" href="#">Praca</a>
-  <a href="#" class="category">Zwierzęta</a>
-  <a href="#" class="category">Ogólne</a>
-  <a href="#" class="category">Sprzedam</a>
-  <a href="#" class="category">Kupię</a>
-</nav>
+  <nav class="navigation">
+    <a class="category" th:href="@{/client/announcements}" href="#">Moje ogłoszenia</a>
+    <a class="category" th:href="@{/change-password}" href="#">Zmień hasło</a>
+    <a class="category" th:href="@{/contact-method}" href="#">Metoda kontaktu</a>
+  </nav>
 <hr>
 <main th:remove="all-but-first">
-  <article th:each="${announcements}" th:object="${announcement}">
+  <h3 th:if="${announcements.isEmpty()}">Nie dodano jeszcze żadnych ogłoszeń!</h3>
+  <article th:each="announcement: ${announcements}">
+    <a href="#" th:href="|category=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
     <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
@@ -40,7 +47,7 @@
       <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
     </section>
   </article>
-  <article th:each="${announcements}" th:object="${announcement}">
+  <article th:each="announcement: ${announcements}">
     <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Dam pracę</a>
     <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 22 października 2023 r. o godzinie 10:30</p>
     <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
@@ -54,7 +61,7 @@
       <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
     </section>
   </article>
-  <div th:insert="footer :: copy"></div>
+  <
 </main>
 <footer>
   &copy; Mikołaj Diakowski

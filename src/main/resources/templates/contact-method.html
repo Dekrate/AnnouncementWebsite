@@ -13,9 +13,15 @@
   <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
   <h3>Strona główna</h3>
   <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+  <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
   <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
   <!--            </form>-->
 </header>
+<nav class="navigation">
+  <a class="category" th:href="@{/client/announcements}" href="#">Moje ogłoszenia</a>
+  <a class="category" th:href="@{/change-password}" href="#">Zmień hasło</a>
+  <a class="category" th:href="@{/contact-method}" href="#">Metoda kontaktu</a>
+</nav>
 <main>
   <p style="color: lightgreen" th:text="${success != null} ? ${success}"></p>
   <form action="/client/contact-method" method="post">
