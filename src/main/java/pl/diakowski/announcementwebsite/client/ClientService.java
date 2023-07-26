@@ -60,10 +60,15 @@ public class ClientService {
     }
 
     @Transactional
-    public void changePassword(ClientDto dto, String newPassword, String password, String repeatedNewPassword)
+    public void changePassword(ClientDto dto, String oldPassword, String newPassword, String repeatedNewPassword)
             throws OldPasswordDoesNotMatchException, PasswordsDoNotMatchException {
         Optional<Client> optionalClient = clientRepository.findById(dto.id());
         optionalClient.ifPresentOrElse(client -> {
+            if (!passwordEncoder.matches(oldPassword, client.getPassword()))
+                throw new OldPasswordDoesNotMatchException("Old password does not match");
+            if (!newPassword.equals(repeatedNewPassword)) {
+                throw new PasswordsDoNotMatchException("Passwords do not match");
+            }
             client.setPassword(passwordEncoder.encode(newPassword));
             clientRepository.save(client);
         }, () -> {

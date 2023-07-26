@@ -78,22 +78,23 @@ public class ClientController {
 	@GetMapping("/client/change-password")
 	public String changePasswordWebsite(Model model) {
 		ClientDto client = getClientDto();
+		model.addAttribute("error", model.getAttribute("error"));
 		model.addAttribute("client", client);
 		return "change-password";
 	}
 
 	// TODO post mappings
 	@PostMapping("/client/change-password")
-	public RedirectView changePassword(Model model, String oldPassword, String newPassword, String repeatedNewPassword) {
+	public String changePassword(Model model, String oldPassword, String newPassword, String repeatedNewPassword) {
 		ClientDto client = getClientDto();
-		RedirectView redirectView = new RedirectView();
 		try {
 			clientService.changePassword(client, oldPassword, newPassword, repeatedNewPassword);
+			model.addAttribute("success", true);
 		} catch (OldPasswordDoesNotMatchException e) {
 			model.addAttribute("error", "Old password does not match");
 		} catch (PasswordsDoNotMatchException e) {
 			model.addAttribute("error", "Passwords do not match");
 		}
-		return null; // TODO return redirectView
+		return "change-password"; // TODO return redirectView
 	}
 }
