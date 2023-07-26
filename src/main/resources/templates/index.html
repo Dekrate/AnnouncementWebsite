@@ -17,7 +17,7 @@
             <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
             <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
             <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
-            <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
+            <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
             <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
 <!--            </form>-->
         </header>

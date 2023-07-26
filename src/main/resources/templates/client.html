@@ -17,7 +17,7 @@
     <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
     <!--            <form method="post" th:action="@{/logout}">-->
     <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
-    <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
+    <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
     <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
     <!--            </form>-->
   </header>

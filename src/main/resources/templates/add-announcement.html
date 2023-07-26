@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <meta charset="UTF-8">
-    <title>Dodaj ogłoszenie - Serwis ogłoszeniowy</title>
-    <link rel="stylesheet" href="../static/style/main.css" th:href="@{style/main.css}">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <header>
-      <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
-      <h3>Strona główna</h3>
-      <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-      <a sec:authentication="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
-      <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
-      <!--            </form>-->
-    </header>
-    <nav class="navigation" th:remove="all-but-first">
-      <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
-      <a href="#" class="category">Zwierzęta</a>
-      <a href="#" class="category">Ogólne</a>
-      <a href="#" class="category">Sprzedam</a>
-      <a href="#" class="category">Kupię</a>
-    </nav>
-    <main>
-      <a th:href="@{/client/contact-method}" th:if="${client.contactMethodDto == null}" th:text="${error}"></a>
-      <form action="/add-announcement" method="post" enctype="multipart/form-data">
-        <label>Wybierz kategorię<br />
-          <select name="category">
-            <option th:remove="all-but-first" th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}" >Samochody</option>
-            <option value="animals">Zwierzęta</option>
-          </select>
-        </label><br />
-        <label>
-          <input type="text" name="title" placeholder="Tytuł">
-        </label><br />
-        <div class="form-group">
-          <label for="content"></label>
-          <textarea id="content" rows="4" placeholder="Treść" class="form-control"
-                    autocomplete="off"></textarea>
-        </div>
-        <label>Dodaj obrazki w formacie jpg lub png<br />
-          <input type="file" name="pictures" accept="image/png, image/jpeg" multiple>
-        </label>
-        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
-        <button type="submit">Dodaj</button>
-      </form>
-    </main>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta charset="UTF-8">
+  <title>Dodaj ogłoszenie - Serwis ogłoszeniowy</title>
+  <link rel="stylesheet" href="../static/style/main.css" th:href="@{style/main.css}">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+</head>
+<body>
+<header>
+  <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
+  <h3>Strona główna</h3>
+  <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+  <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
+  <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+  <!--            </form>-->
+</header>
+<nav class="navigation" th:remove="all-but-first">
+  <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
+  <a href="#" class="category">Zwierzęta</a>
+  <a href="#" class="category">Ogólne</a>
+  <a href="#" class="category">Sprzedam</a>
+  <a href="#" class="category">Kupię</a>
+</nav>
+<main>
+  <a th:href="@{/client/contact-method}" th:if="${client.contactMethodDto == null}" th:text="${error}"></a>
+  <form action="/add-announcement" method="post" enctype="multipart/form-data">
+    <label>Wybierz kategorię<br />
+      <select name="category">
+        <option th:remove="all-but-first" th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}" >Samochody</option>
+        <option value="animals">Zwierzęta</option>
+      </select>
+    </label><br />
+    <label>
+      <input type="text" name="title" placeholder="Tytuł">
+    </label><br />
+    <div class="form-group">
+      <label for="content"></label>
+      <textarea id="content" rows="4" placeholder="Treść" class="form-control"
+                autocomplete="off"></textarea>
+    </div>
+    <label>Dodaj obrazki w formacie jpg lub png<br />
+      <input type="file" name="pictures" accept="image/png, image/jpeg" multiple>
+    </label>
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+    <button type="submit">Dodaj</button>
+  </form>
+</main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
-    <script>
-      $('#content').summernote({
-        height: 200,
-        width: 500,
-        direction: 'rtl'
-      });
-    </script>
-  </body>
+<script>
+  $('#content').summernote({
+    height: 200,
+    width: 500,
+    direction: 'rtl'
+  });
+</script>
+</body>
 
 </html>
