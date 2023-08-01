@@ -31,8 +31,7 @@
   <form action="/add-announcement" method="post" enctype="multipart/form-data">
     <label>Wybierz kategorię<br />
       <select name="category">
-        <option th:remove="all-but-first" th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}" >Samochody</option>
-        <option value="animals">Zwierzęta</option>
+        <option th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}">Samochody</option>
       </select>
     </label><br />
     <label>
@@ -40,7 +39,7 @@
     </label><br />
     <div class="form-group">
       <label for="content"></label>
-      <textarea id="content" rows="4" placeholder="Treść" class="form-control"
+      <textarea id="content" rows="4" name="content" placeholder="Treść" class="form-control"
                 autocomplete="off"></textarea>
     </div>
     <label>Dodaj obrazki w formacie jpg lub png<br />

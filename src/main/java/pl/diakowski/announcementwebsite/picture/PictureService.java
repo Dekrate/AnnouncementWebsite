@@ -1,5 +1,6 @@
 package pl.diakowski.announcementwebsite.picture;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
@@ -23,6 +24,7 @@ public class PictureService {
 		this.pictureRepository = pictureRepository;
 	}
 
+	@Transactional
 	public Set<PictureDto> saveOnDisk(Set<MultipartFile> pictures) throws IOException, IllegalArgumentException {
 		HashSet<PictureDto> picturesSet = new HashSet<>();
 		if (pictures.isEmpty()) {

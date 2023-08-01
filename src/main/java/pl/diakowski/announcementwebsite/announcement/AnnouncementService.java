@@ -12,6 +12,7 @@ import pl.diakowski.announcementwebsite.category.CategoryRepository;
 import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
+import pl.diakowski.announcementwebsite.contactmethod.ContactMethodRepository;
 import pl.diakowski.announcementwebsite.contactmethod.exception.ContactMethodNotFoundException;
 import pl.diakowski.announcementwebsite.picture.PictureDtoMapper;
 import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
@@ -26,11 +27,14 @@ import java.util.stream.Collectors;
 public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final CategoryRepository categoryRepository;
+    private final ContactMethodRepository contactMethodRepository;
 
     public AnnouncementService(AnnouncementRepository announcementRepository,
-                               CategoryRepository categoryRepository) {
+                               CategoryRepository categoryRepository,
+                               ContactMethodRepository contactMethodRepository) {
         this.announcementRepository = announcementRepository;
         this.categoryRepository = categoryRepository;
+        this.contactMethodRepository = contactMethodRepository;
     }
 
     public List<AnnouncementDto> findAllByCategoryNameAndPage(String name, Integer page) {
@@ -53,6 +57,8 @@ public class AnnouncementService {
         if (clientDto.contactMethodDto() == null)
             throw new ContactMethodNotFoundException("Contact method not found");
         Announcement announcement = new Announcement();
+        announcement.setContactMethod(contactMethodRepository.findByClient(ClientDtoMapper.map(clientDto))
+                .orElseThrow(() -> new ContactMethodNotFoundException("Contact method not found")));
         announcement.setTitle(announcementDto.getTitle());
         announcement.setContent(announcementDto.getContent());
         announcement.setPublicationTime(LocalDateTime.now());

@@ -28,6 +28,7 @@ public class ContactMethodService {
 		if (contactMethodOptional.isPresent()) {
 			contactMethodOptional.get().setEmail(contactMethodDto.getEmail());
 			contactMethodOptional.get().setPhoneNumber(contactMethodDto.getPhoneNumber());
+			contactMethodOptional.get().setClient(ClientDtoMapper.map(clientDto));
 			return ContactMethodDtoMapper.map(contactMethodRepository.save(contactMethodOptional.get()));
 		} else {
 			ContactMethod contactMethod = new ContactMethod();
