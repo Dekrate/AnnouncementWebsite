@@ -1,6 +1,5 @@
 package pl.diakowski.announcementwebsite.config;
 
-import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +39,8 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/login")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/register")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/not-found")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/403")).permitAll());
+                .requestMatchers(new AntPathRequestMatcher("/403")).permitAll()
+                .anyRequest().permitAll());
         http.exceptionHandling(exceptionHandler -> exceptionHandler
                 .accessDeniedPage("/403"));
 //                .authenticationEntryPoint((request, response, authException) -> {}));
@@ -63,10 +63,10 @@ public class SecurityConfiguration {
     }
 
     /**
-     * @return {@link HtmlPolicyBuilder}, which is used in {@link AnnouncementController} to allow some HTML tags.<br />
+     * @return {@link PolicyFactory}, which is used in {@link AnnouncementController} to allow some HTML tags.<br />
      */
     @Bean
     PolicyFactory policyFactory() {
-        return Sanitizers.BLOCKS;
+        return Sanitizers.BLOCKS.and(Sanitizers.STYLES).and(Sanitizers.LINKS).and(Sanitizers.FORMATTING);
     }
 }

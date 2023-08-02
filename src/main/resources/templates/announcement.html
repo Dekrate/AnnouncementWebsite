@@ -22,7 +22,7 @@
   <!--            </form>-->
 </header>
 <nav class="navigation" th:remove="all-but-first">
-  <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
+  <a class="category" th:each="category: ${categories}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
   <a href="#" class="category">Zwierzęta</a>
   <a href="#" class="category">Ogólne</a>
   <a href="#" class="category">Sprzedam</a>
@@ -30,9 +30,9 @@
 </nav>
 <hr>
 <main>
-  <h3 th:if="${announcement == null}" th:text="|Ogłoszenie nie istnieje!|"></h3>
-  <article th:each="${announcement}">
-    <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Motoryzacja</a>
+  <h3 th:text="${error}"></h3>
+  <article>
+    <a href="#" th:href="|category?id=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
     <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
@@ -44,7 +44,7 @@
       <h5>Dane kontaktowe</h5>
       <a th:href="|mailto:${announcement.contactMethod.email}|" th:text="${announcement.contactMethod.email}" href="#">abc@abc.pl</a>
       <a th:href="|tel:${announcement.contactMethod.phoneNumber}|" href="#">+48 123 456 789</a>
-      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
+<!--      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>-->
     </section>
   </article>
 </main>

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
+import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
 import pl.diakowski.announcementwebsite.category.CategoryRepository;
 import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
@@ -73,6 +74,11 @@ public class AnnouncementService {
     public List<AnnouncementDto> findAllByClient(ClientDto clientDto, Integer page) {
         Page<Announcement> announcements = announcementRepository.findByAuthor(ClientDtoMapper.map(clientDto),
                 PageRequest.of(page, 10));
-        return announcements.stream().parallel().map(AnnouncementDtoMapper::map).sorted(Comparator.comparing(AnnouncementDto::publicationTime).reversed()).toList();
+        return announcements.stream().parallel().map(AnnouncementDtoMapper::map).sorted(Comparator.comparing(AnnouncementDto::getPublicationTime).reversed()).toList();
+    }
+
+    public AnnouncementDto findById(Long id) throws AnnouncementNotFoundException {
+        return announcementRepository.findById(id).map(AnnouncementDtoMapper::map)
+                .orElseThrow(() -> new AnnouncementNotFoundException("Announcement not found"));
     }
 }

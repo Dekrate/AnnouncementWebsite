@@ -7,12 +7,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
+import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
 import pl.diakowski.announcementwebsite.category.CategoryService;
 import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientService;
@@ -25,6 +27,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Controller for announcement pages. It is responsible for adding, editing, viewing and deleting announcements.
+ * @since 1.0
+ * @version 1.0
+ */
 @Controller
 public class AnnouncementController {
 	private final AnnouncementService announcementService;
@@ -43,6 +50,12 @@ public class AnnouncementController {
 		this.htmlPolicyFactory = htmlPolicyFactory;
 	}
 
+	/**
+	 * Method for redirecting to /add-announcement
+	 * @since 1.0
+	 * @param model Model for redirecting
+	 * @return RedirectView to /add-announcement
+	 */
 	@GetMapping("/add-announcement")
 	public String addAnnouncementPage(Model model) {
 		model.addAttribute("categories", categoryService.findAllCategories());
@@ -55,19 +68,27 @@ public class AnnouncementController {
 		return "add-announcement";
 	}
 
-	@PostMapping("/add-announcement") // TODO add validation of html tags
+	/**
+	 * Method for adding a new announcement. It is responsible for saving pictures on disk, adding the announcement to a database. It is also responsible for redirecting to /announcement?id={id}. If there is any error, it redirects to /add-announcement with an error message.
+	 * @since 1.0
+	 * @param newAnnouncementDto DTO of a new announcement
+	 * @param pictures Set of pictures
+	 * @param model Model for redirecting
+	 * @return RedirectView to /add-announcement
+	 */
+	@PostMapping("/add-announcement")
 	public RedirectView addAnnouncement(NewAnnouncementDto newAnnouncementDto,
 	                                    HashSet<MultipartFile> pictures,
 	                                    Model model) {
-
 		RedirectView redirectView = new RedirectView();
 		redirectView.setHttp10Compatible(false);
+		newAnnouncementDto.setContent(htmlPolicyFactory.sanitize(newAnnouncementDto.getContent()));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ClientDto clientDto = clientService.findByUsername(authentication.getName());
 		try {
 			Set<PictureDto> save = pictureService.saveOnDisk(pictures);
 			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, save, clientDto);
-			redirectView.setUrl("/announcement?id=" + saved.id());
+			redirectView.setUrl("/announcement?id=" + saved.getId());
 		} catch (IllegalArgumentException | OptimisticLockingFailureException e) {
 			model.addAttribute("error", "Nie udało się dodać ogłoszenia.");
 			redirectView.setUrl("/add-announcement?errora");
@@ -82,5 +103,26 @@ public class AnnouncementController {
 			redirectView.setUrl("/add-announcement?errord");
 		}
 		return redirectView;
+	}
+
+	/**
+	 * Method for redirecting to /edit-announcement?id={id}. If there is any error, it redirects to /announcement?id={id} with an error message.
+	 * @since 1.0
+	 * @param id Id of an announcement
+	 * @param model Model for redirecting
+	 * @return RedirectView to /announcement?id={id}
+	 */
+	@GetMapping("/announcement?id={id}")
+	public String announcementPage(@PathVariable Long id, Model model) {
+		try {
+			AnnouncementDto announcementDto = announcementService.findById(id);
+			Set<PictureDto> pictures = announcementDto.getPictures();
+			model.addAttribute("announcement", announcementDto);
+			model.addAttribute("categories", categoryService.findAllCategories());
+			model.addAttribute("pictures", pictures);
+		} catch (AnnouncementNotFoundException e) {
+			model.addAttribute("error", "Nie znaleziono ogłoszenia.");
+		}
+		return "announcement";
 	}
 }

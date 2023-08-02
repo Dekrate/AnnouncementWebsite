@@ -33,7 +33,7 @@ public class Announcement {
     @OneToOne
     private ContactMethod contactMethod;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "announcement_id")
     private Set<Picture> pictures = new HashSet<>();
     @NotNull
