@@ -20,7 +20,7 @@
   <!--            </form>-->
 </header>
 <nav class="navigation" th:remove="all-but-first">
-  <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
+  <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?id=${category.id}|" href="#">Praca</a>
   <a href="#" class="category">Zwierzęta</a>
   <a href="#" class="category">Ogólne</a>
   <a href="#" class="category">Sprzedam</a>
