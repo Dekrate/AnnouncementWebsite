@@ -6,8 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
+import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
+import pl.diakowski.announcementwebsite.announcement.exception.ClientNameAndAuthorNameDoNotEqualException;
 import pl.diakowski.announcementwebsite.category.CategoryService;
 import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
@@ -55,10 +58,12 @@ public class ClientController {
 	 * @return RedirectView to /client/announcements
 	 */
 	@GetMapping("/client/announcements")
-	public String announcements(Model model) {
+	public String announcements(@RequestParam(required = false, defaultValue = "1") Integer page, Model model) {
 		ClientDto client = getClientDto();
 		model.addAttribute("client", client);
-		model.addAttribute("announcements", announcementService.findAllByClient(client, 0)); // page 0 implies the first page
+		model.addAttribute("announcements", announcementService.findAllByClient(client, page)); // page 0 implies the first page
+		model.addAttribute("page", page == null ? 1 : page);
+		model.addAttribute("pages", announcementService.countPagesByClient(client));
 		return "user-announcements";
 	}
 
@@ -137,5 +142,28 @@ public class ClientController {
 			model.addAttribute("error", "Passwords do not match");
 		}
 		return "change-password";
+	}
+
+	/**
+	 * Method for deleting client announcements.
+	 * If there is any error, it redirects to /announcement?id={id} with an error message.
+	 * @since 1.0
+	 * @param id Id of an announcement
+	 * @return RedirectView to /edit-announcement?id={id}
+	 */
+	@GetMapping("/client/delete-announcement")
+	public RedirectView deleteAnnouncement(Long id) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		ClientDto client = clientService.findByUsername(SecurityContextHolder.getContext()
+				.getAuthentication().getName());
+		try {
+			announcementService.deleteById(client, id);
+		} catch (AnnouncementNotFoundException | ClientNameAndAuthorNameDoNotEqualException e) {
+			redirectView.setUrl("/client/announcements");
+			return redirectView;
+		}
+		redirectView.setUrl("/client/announcements");
+		return redirectView;
 	}
 }

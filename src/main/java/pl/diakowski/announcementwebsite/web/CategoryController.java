@@ -3,6 +3,7 @@ package pl.diakowski.announcementwebsite.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.category.CategoryService;
@@ -34,13 +35,15 @@ public class CategoryController {
      * @return category.html
      */
     @GetMapping("/category")
-    public String viewCategoryContent(Long id, Integer page, Model model) {
+    public String viewCategoryContent(@RequestParam Long id,
+                                      @RequestParam(required = false, defaultValue = "1") Integer page,
+                                      Model model) {
         try {
 
-            List<AnnouncementDto> announcements = announcementService.findAllByCategoryIdAndPage(id, page == null ? 1 : page);
+            List<AnnouncementDto> announcements = announcementService.findAllByCategoryIdAndPage(id, page);
             model.addAttribute("announcements", announcements);
             model.addAttribute("pages", categoryService.countPages(categoryService.findById(id), 10));
-            model.addAttribute("page", page == null ? 1 : page);
+            model.addAttribute("page", page);
         } catch (NullPointerException e) {
             model.addAttribute("error", "Nie ma takiej kategorii");
         }

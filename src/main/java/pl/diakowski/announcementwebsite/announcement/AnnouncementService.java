@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
+import pl.diakowski.announcementwebsite.announcement.exception.ClientNameAndAuthorNameDoNotEqualException;
 import pl.diakowski.announcementwebsite.category.CategoryRepository;
 import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
@@ -15,6 +16,7 @@ import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethodRepository;
 import pl.diakowski.announcementwebsite.contactmethod.exception.ContactMethodNotFoundException;
 import pl.diakowski.announcementwebsite.picture.PictureDtoMapper;
+import pl.diakowski.announcementwebsite.picture.PictureRepository;
 import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
 import pl.diakowski.announcementwebsite.web.AnnouncementController;
 
@@ -38,13 +40,16 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final CategoryRepository categoryRepository;
     private final ContactMethodRepository contactMethodRepository;
+    private final PictureRepository pictureRepository;
 
     public AnnouncementService(AnnouncementRepository announcementRepository,
                                CategoryRepository categoryRepository,
-                               ContactMethodRepository contactMethodRepository) {
+                               ContactMethodRepository contactMethodRepository,
+                               PictureRepository pictureRepository) {
         this.announcementRepository = announcementRepository;
         this.categoryRepository = categoryRepository;
         this.contactMethodRepository = contactMethodRepository;
+        this.pictureRepository = pictureRepository;
     }
 
     /**
@@ -141,5 +146,37 @@ public class AnnouncementService {
                 findAllByCategoryOrderByPublicationTimeDesc(categoryRepository.findById(id)
                         .orElseThrow(CategoryNotFoundException::new), PageRequest.of(page - 1, 10));
         return list.stream().parallel().map(AnnouncementDtoMapper::map).toList();
+    }
+
+    /**
+     * Method, which finds all announcements by category id. It is used in client announcement page.
+     * @since 1.0
+     * @param client client
+     * @return number of pages
+     */
+    public Integer countPagesByClient(ClientDto client) {
+        return announcementRepository
+                .findByAuthor(ClientDtoMapper.map(client), PageRequest.ofSize(10))
+                .getTotalPages();
+    }
+
+    /**
+     * Method, which deletes an announcement by its id. It is used in delete announcement page.
+     * If an announcement is not found or a user tries to delete someone else's announcement, it throws an exception.
+     * @since 1.0
+     * @param clientDto client dto
+     * @param id id of an announcement
+     * @throws AnnouncementNotFoundException when an announcement is not found
+     * @throws ClientNameAndAuthorNameDoNotEqualException when client name and author name don't equal
+     */
+    @Transactional
+    public void deleteById(ClientDto clientDto, Long id)
+            throws AnnouncementNotFoundException, ClientNameAndAuthorNameDoNotEqualException {
+        Announcement announcement = announcementRepository.findById(id)
+                .orElseThrow(() -> new AnnouncementNotFoundException("Announcement not found"));
+        if (!clientDto.name().equals(announcement.getAuthor().getName()))
+            throw new ClientNameAndAuthorNameDoNotEqualException("Client name and author name don't equal");
+        pictureRepository.deleteAll(announcement.getPictures());
+        announcementRepository.deleteById(id);
     }
 }

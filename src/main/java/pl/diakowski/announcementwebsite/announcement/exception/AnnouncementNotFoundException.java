@@ -14,4 +14,15 @@ public class AnnouncementNotFoundException extends EntityNotFoundException {
 	public AnnouncementNotFoundException(String message) {
 		super(message);
 	}
+
+	public AnnouncementNotFoundException(String message, Exception cause) {
+		super(message, cause);
+	}
+
+	public AnnouncementNotFoundException() {
+	}
+
+	public AnnouncementNotFoundException(Exception cause) {
+		super(cause);
+	}
 }
