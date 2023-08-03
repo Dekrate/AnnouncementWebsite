@@ -36,8 +36,11 @@ public class CategoryController {
     @GetMapping("/category")
     public String viewCategoryContent(Long id, Integer page, Model model) {
         try {
+
             List<AnnouncementDto> announcements = announcementService.findAllByCategoryIdAndPage(id, page == null ? 1 : page);
             model.addAttribute("announcements", announcements);
+            model.addAttribute("pages", categoryService.countPages(categoryService.findById(id), 10));
+            model.addAttribute("page", page == null ? 1 : page);
         } catch (NullPointerException e) {
             model.addAttribute("error", "Nie ma takiej kategorii");
         }

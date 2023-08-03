@@ -26,7 +26,7 @@
   <a href="#" class="category">Kupię</a>
 </nav>
 <hr>
-<main th:remove="all-but-first">
+<main>
   <article th:each="announcement: ${announcements}">
     <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
@@ -42,10 +42,25 @@
 <!--      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>-->
     </section>
   </article>
-  <div th:insert="footer :: copy"></div>
+  <div>
+    <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
+    <label for="page-dropdown">
+      <select th:remove="all-but-first" id="page-dropdown">
+        <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
+        <option value="2">2</option>
+      </select>
+    </label>
+  </div>
 </main>
 <footer>
   &copy; Mikołaj Diakowski
 </footer>
+<script type="text/javascript">
+  let elementById = document.getElementById("page-dropdown");
+  elementById.addEventListener("change", function () {
+    let page = elementById.value;
+    window.location.href = "/?id=" + new URLSearchParams(window.location.search).get("id") + "&page=" + page;
+  });
+</script>
 </body>
 </html>
