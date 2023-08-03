@@ -1,18 +1,14 @@
 package pl.diakowski.announcementwebsite.picture;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -24,20 +20,16 @@ public class PictureService {
 		this.pictureRepository = pictureRepository;
 	}
 
-	@Transactional
-	public Set<PictureDto> saveOnDisk(Set<MultipartFile> pictures) throws IOException, IllegalArgumentException {
+	public Set<PictureDto> saveOnDisk(MultipartFile[] pictures) throws IOException, IllegalArgumentException {
 		HashSet<PictureDto> picturesSet = new HashSet<>();
-		if (pictures.isEmpty()) {
+		if (pictures.length == 0) {
 			return Set.of();
 		}
+		Path imagesPath = Paths.get("/images/"); //TODO handling uploading pictures
+			Files.createDirectory(imagesPath);
 		for (MultipartFile picture : pictures) {
-			Path pathToPicture = rootLocation.resolve(Paths.get(Objects.requireNonNull(picture.getOriginalFilename())).normalize().toAbsolutePath());
-			if (!pathToPicture.getParent().equals(rootLocation.toAbsolutePath())) {
-				throw new IllegalArgumentException("Cannot store file outside the current directory.");
-			}
-			InputStream inputStream = picture.getInputStream();
-			Files.copy(inputStream, pathToPicture, StandardCopyOption.REPLACE_EXISTING);
-			picturesSet.add(new PictureDto(null, pathToPicture.toString()));
+			picture.transferTo(imagesPath);
+			picturesSet.add(new PictureDto(null, String.format("%s/%s", imagesPath, picture.getOriginalFilename())));
 		}
 		return picturesSet;
 	}

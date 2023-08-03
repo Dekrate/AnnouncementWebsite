@@ -47,8 +47,7 @@ public class AnnouncementService {
 
     public List<AnnouncementDto> findFiveNewestAnnouncements() {
         return announcementRepository.findAll(Sort.by(Sort.Direction.DESC, "publicationTime"))
-                .stream().map(AnnouncementDtoMapper::map)
-                .toList();
+                .stream().map(AnnouncementDtoMapper::map).limit(5).toList();
     }
 
     @Transactional
@@ -80,5 +79,12 @@ public class AnnouncementService {
     public AnnouncementDto findById(Long id) throws AnnouncementNotFoundException {
         return announcementRepository.findById(id).map(AnnouncementDtoMapper::map)
                 .orElseThrow(() -> new AnnouncementNotFoundException("Announcement not found"));
+    }
+
+    public List<AnnouncementDto> findAllByCategoryIdAndPage(Long id, int page) {
+        return announcementRepository.findAllByIdOrderByPublicationTimeDesc(id, PageRequest.of(page, 10))
+                .stream().parallel()
+                .map(AnnouncementDtoMapper::map)
+                .toList();
     }
 }

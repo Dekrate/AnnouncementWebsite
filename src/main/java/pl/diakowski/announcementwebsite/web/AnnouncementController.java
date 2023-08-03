@@ -24,7 +24,6 @@ import pl.diakowski.announcementwebsite.picture.PictureService;
 import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -78,7 +77,7 @@ public class AnnouncementController {
 	 */
 	@PostMapping("/add-announcement")
 	public RedirectView addAnnouncement(NewAnnouncementDto newAnnouncementDto,
-	                                    HashSet<MultipartFile> pictures,
+	                                    MultipartFile[] pictures,
 	                                    Model model) {
 		RedirectView redirectView = new RedirectView();
 		redirectView.setHttp10Compatible(false);

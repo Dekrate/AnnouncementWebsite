@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.category.CategoryService;
+import pl.diakowski.announcementwebsite.category.dto.CategoryDto;
 
 import java.util.List;
 
@@ -20,17 +21,19 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/category?name={name}")
-    public String viewCategoryContent(@PathVariable String name, Model model) {
+    @GetMapping("/category?id={id}")
+    public String viewCategoryContent(@PathVariable Long id, Model model) {
         List<AnnouncementDto> announcements = announcementService
-                .findAllByCategoryNameAndPage(name, 1);
+                .findAllByCategoryIdAndPage(id, 1);
+        List<CategoryDto> categories = categoryService.findAllCategories();
         model.addAttribute(announcements);
+        model.addAttribute(categories);
         return "category";
     }
 
-    @GetMapping("/category?name={name}&page={page}")
-    public String viewCategoryContent(@PathVariable String name, @PathVariable Integer page, Model model) {
-        List<AnnouncementDto> announcements = announcementService.findAllByCategoryNameAndPage(name, page);
+    @GetMapping("/category?id={id}&page={page}")
+    public String viewCategoryContent(@PathVariable Long id, @PathVariable Integer page, Model model) {
+        List<AnnouncementDto> announcements = announcementService.findAllByCategoryIdAndPage(id, page);
         model.addAttribute(announcements);
         return "category";
     }

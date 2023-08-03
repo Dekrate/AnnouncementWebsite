@@ -21,6 +21,12 @@ public class HomeController {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Home page.
+     * @since 1.0
+     * @param model model
+     * @return index.html
+     */
     @GetMapping({"/", "/index"})
     public String home(Model model) {
         model.addAttribute("announcements", announcementService.findFiveNewestAnnouncements());

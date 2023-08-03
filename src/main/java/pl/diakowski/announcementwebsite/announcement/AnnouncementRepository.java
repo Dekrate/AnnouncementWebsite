@@ -12,7 +12,9 @@ import java.util.Optional;
  *
  */
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
+	Page<Announcement> findAllByIdOrderByPublicationTimeDesc(Long id, Pageable pageable);
 	Page<Announcement> findByAuthor(Client author, Pageable pageable);
 	Optional<Announcement> findByTitle(String title);
     List<Announcement> findAllByTitleOrderByPublicationTimeDesc(String title, Pageable pageable);
+
 }

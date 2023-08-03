@@ -9,15 +9,17 @@
 <header>
   <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
   <h3>Strona główna</h3>
-  <a th:if="${!authenticated}" href="#" th:href="/login">Zaloguj się</a>
-  <a th:if="${!authenticated}" href="#" th:href="/register">Nie masz konta? Utwórz je teraz!</a>
-  <p th:if="${authenticated}" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-  <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
-  <a th:if="${authenticated}" th:text="Wyloguj się" th:href="/logout" href="#"></a>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
+  <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+  <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
   <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
+  <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
+  <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+  <!--            </form>-->
 </header>
 <nav th:remove="all-but-first">
-  <a th:each="${categories}" class="category" th:object="${category}" th:text="" href="#">Praca</a>
+  <a th:each="category: ${categories}" class="category" th:text="" href="#">Praca</a>
   <a href="#" class="category">Zwierzęta</a>
   <a href="#" class="category">Ogólne</a>
   <a href="#" class="category">Sprzedam</a>
@@ -25,8 +27,8 @@
 </nav>
 <hr>
 <main th:remove="all-but-first">
-  <article th:each="${announcements}" th:object="${announcement}">
-    <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
+  <article th:each="announcement: ${announcements}">
+    <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
     <p th:text="${announcement.content}">
@@ -37,21 +39,7 @@
       <h5>Dane kontaktowe</h5>
       <a th:href="|mailto:${announcement.contactMethod.email}|" th:text="${announcement.contactMethod.email}" href="#">abc@abc.pl</a>
       <a th:href="|tel:${announcement.contactMethod.phoneNumber}|" href="#">+48 123 456 789</a>
-      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
-    </section>
-  </article>
-  <article th:each="${announcements}" th:object="${announcement}">
-    <a href="#" th:href="${announcement.category.id}" th:text="${announcement.category.name}">Dam pracę</a>
-    <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 22 października 2023 r. o godzinie 10:30</p>
-    <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
-    <h4 th:text="${announcement.title}">Praca na magazynie</h4>
-    <p th:text="${announcement.content}">
-    </p>
-    <section class="contact-info">
-      <h5>Dane kontaktowe</h5>
-      <a th:href="|mailto:${announcement.contactMethod.email}|" th:text="${announcement.contactMethod.email}" href="#">def@def.pl</a>
-      <a th:href="|tel:${announcement.contactMethod.phoneNumber}|" href="#">+48 987 654 321</a>
-      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>
+<!--      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>-->
     </section>
   </article>
   <div th:insert="footer :: copy"></div>

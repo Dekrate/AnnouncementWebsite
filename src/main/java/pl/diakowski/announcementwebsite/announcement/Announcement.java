@@ -3,6 +3,7 @@ package pl.diakowski.announcementwebsite.announcement;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.diakowski.announcementwebsite.category.Category;
 import pl.diakowski.announcementwebsite.client.Client;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
@@ -24,6 +25,7 @@ public class Announcement {
     @Column(unique = true, updatable = false)
     @PastOrPresent
     @NotNull
+    @DateTimeFormat(pattern = "dd MMMM yyyy HH:mm")
     private LocalDateTime publicationTime;
     @ManyToOne
     @JoinColumn(name = "author_id")

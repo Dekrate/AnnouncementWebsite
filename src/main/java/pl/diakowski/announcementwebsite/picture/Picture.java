@@ -29,11 +29,11 @@ public class Picture {
         this.id = id;
     }
 
-    public String getPath() {
+    public @NotNull String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(@NotNull String path) {
         this.path = path;
     }
 }
