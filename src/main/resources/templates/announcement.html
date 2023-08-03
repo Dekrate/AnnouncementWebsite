@@ -15,11 +15,8 @@
   <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
   <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
   <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-  <!--            <form method="post" th:action="@{/logout}">-->
-  <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
   <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
   <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
-  <!--            </form>-->
 </header>
 <nav class="navigation" th:remove="all-but-first">
   <a class="category" th:each="category: ${categories}" th:text="${category.name}" th:href="|category?id=${category.id}|" href="#">Praca</a>
@@ -33,10 +30,10 @@
   <h3 th:text="${error}"></h3>
   <article>
     <a href="#" th:href="|category?id=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
-    <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
-    <img th:each="${announcement.pictures}" th:object="${picture}" th:src="@{picture.path}" src="" alt=""/>
+    <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
+    <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
-    <p th:text="${announcement.content}">
+    <p th:utext="${announcement.content}">
       Sprzedam działającego Opla z rocznika 2024 r., w okazyjnej cenie 4000 zł.
       Zainteresowanych zapraszam do kontaktu ze mną!
     </p>

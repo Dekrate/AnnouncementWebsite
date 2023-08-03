@@ -25,26 +25,6 @@ public class CategoryController {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
     }
-
-    /**
-     * Method for viewing category content.
-     * It is used when a user clicks on category name.
-     * It shows 10 newest announcements.
-     * @since 1.0
-     * @param id category id
-     * @param model model
-     * @return category.html
-     */
-//    @GetMapping("/category?id={id}")
-//    public String viewCategoryContent(@PathVariable Long id, Model model) {
-//        List<AnnouncementDto> announcements = announcementService
-//                .findAllByCategoryIdAndPage(id, 1);
-//        List<CategoryDto> categories = categoryService.findAllCategories();
-//        model.addAttribute(announcements);
-//        model.addAttribute(categories);
-//        return "category";
-//    }
-
     /**
      * Method for viewing category content. It is used when a user clicks on page number. It shows 10 announcements.
      * @since 1.0

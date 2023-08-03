@@ -7,7 +7,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
@@ -111,8 +110,8 @@ public class AnnouncementController {
 	 * @param model Model for redirecting
 	 * @return RedirectView to /announcement?id={id}
 	 */
-	@GetMapping("/announcement?id={id}")
-	public String announcementPage(@PathVariable Long id, Model model) {
+	@GetMapping("/announcement")
+	public String announcementPage(Long id, Model model) {
 		try {
 			AnnouncementDto announcementDto = announcementService.findById(id);
 			Set<PictureDto> pictures = announcementDto.getPictures();
