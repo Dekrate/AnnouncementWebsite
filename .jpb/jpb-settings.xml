@@ -14,7 +14,7 @@
   </component>
   <component name="PersistenceUnitSettings">
     <persistence-units>
-      <persistence-unit name="Default">
+      <persistence-unit name="Default" defaultIncludeChangeLogFile="src/main/resources/db/changelog/db.changelog-primary.xml">
         <packages>
           <package value="pl.diakowski.announcementwebsite" />
         </packages>
