@@ -5,13 +5,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.ban.dto.BanDto;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
-import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
+import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
 import pl.diakowski.announcementwebsite.client.ClientRepository;
 import pl.diakowski.announcementwebsite.client.ClientRoleRepository;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.web.AdminPageController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -45,11 +46,16 @@ public class BanService {
 	 * @since 1.0
 	 */
 	@Transactional
-	public void banUser(ClientDto admin, NewBanDto banDto) throws ClientNotFoundException {
+	public void banUser(ClientDto admin, NewBanDto banDto)
+			throws ClientNotFoundException, AdminCannotBeBannedException {
+		if (clientRepository.findByUsername(banDto.username()).orElseThrow(ClientNotFoundException::new)
+				.getClientRoles().stream()
+				.anyMatch(clientRole -> clientRole.getName().equals("ADMIN")))
+			throw new AdminCannotBeBannedException("Admin cannot be banned!");
 		banRepository.save(new Ban(clientRepository.findByUsername(banDto.username()).orElseThrow(ClientNotFoundException::new),
 				admin.id(),
 				banDto.reason(),
-				banDto.start(),
+				LocalDateTime.now(),
 				banDto.finish()));
 	}
 
@@ -67,19 +73,6 @@ public class BanService {
 	}
 
 	/**
-	 * @param clientDto ClientDto object containing information about the client.
-	 * @return BanDto object containing information about the ban.
-	 * @since 1.0
-	 */
-	@Transactional
-	public List<BanDto> getBansByClient(ClientDto clientDto) {
-		return banRepository.findByClientOrderByIdDesc(ClientDtoMapper.map(clientDto))
-				.stream().parallel()
-				.map(BanDtoMapper::map)
-				.toList();
-	}
-
-	/**
 	 * Method for getting bans from the database. It supports pagination. If there are no bans, it returns an empty list.
 	 * @param page Page number.
 	 * @return List of BanDto objects containing information about the bans.
@@ -87,9 +80,42 @@ public class BanService {
 	 */
 	@Transactional
 	public List<BanDto> getBans(Integer page) {
-		return banRepository.findAll(PageRequest.of(page, 50))
+		return banRepository.findAll(PageRequest.of(page - 1, 50))
 				.stream().parallel()
 				.map(BanDtoMapper::map)
 				.toList();
+	}
+
+	/**
+	 * Method for getting bans from the database.
+	 * It supports pagination.
+	 * If there are no bans, it returns an empty list.
+	 * It also checks if the client exists.
+	 * If it doesn't, it throws an exception.
+	 * @since 1.0
+	 * @param userId User id of the client.
+	 * @param page Page number.
+	 * @return List of BanDto objects containing information about the bans.
+	 * @throws ClientNotFoundException If the client with the given username doesn't exist.
+	 */
+	public List<BanDto> getBans(Long userId, Integer page) throws ClientNotFoundException {
+		return banRepository.findByClientOrderByIdDesc(clientRepository
+						.findById(userId)
+						.orElseThrow(ClientNotFoundException::new), PageRequest.of(page - 1, 50))
+				.stream().parallel()
+				.map(BanDtoMapper::map)
+				.toList();
+	}
+
+	public Integer getPages(Long userId) throws ClientNotFoundException {
+		return banRepository.findByClientOrderByIdDesc(clientRepository
+						.findById(userId)
+						.orElseThrow(ClientNotFoundException::new), PageRequest.ofSize(50))
+				.getTotalPages();
+	}
+
+	public Integer getPages() {
+		return banRepository.findAll(PageRequest.ofSize(50))
+				.getTotalPages();
 	}
 }

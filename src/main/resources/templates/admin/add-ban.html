@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Panel administratora - Serwis ogłoszeniowy</title>
+    <link rel="stylesheet" href="../../static/style/main.css" th:href="@{../style/main.css}">
+</head>
+<body>
+<header>
+    <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
+    <h3>Panel administratora</h3>
+    <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+    <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
+    <!--            <form method="post" th:action="@{/logout}">-->
+    <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
+    <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+    <!--            </form>-->
+</header>
+<nav class="navigation">
+    <a class="category" th:href="@{/admin/bans}" href="#">Blokady kont</a>
+    <a class="category" th:href="@{/admin/admins}" href="#">Administratorzy</a>
+    <a class="category" th:href="@{/admin/categories}" href="#">Kategorie</a>
+</nav>
+<a th:href="@{../}">Powróć do strony głównej</a>
+<main>
+    <div>
+        <form action="/admin/add-admin" method="post">
+            <label for="username"></label><input type="text" name="username" id="username" placeholder="Nazwa użytkownika">
+            <label for="reason"></label><input type="text" name="reason" id="reason" placeholder="Przyczyna">
+            <label for="finish"></label><input type="datetime" name="finish" id="finish" placeholder="Data zakończenia (może być pusta)">
+        </form>
+    </div>
+</main>
+<div>
+    <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
+    <label for="page-dropdown">
+        <select th:remove="all-but-first" id="page-dropdown">
+            <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
+            <option value="2">2</option>
+        </select>
+    </label>
+</div>
+
+<footer>
+    &copy; Mikołaj Diakowski
+</footer>
+<script type="text/javascript">
+    let elementById = document.getElementById("page-dropdown");
+    elementById.addEventListener("change", function () {
+        let page = elementById.value;
+        window.location.href = "/admin/?page=" + page;
+        if (new URLSearchParams(window.location.search).get("userid") == null)
+            window.location.href+= "&userid=" + page;
+    });
+</script>
+</body>
+</html>

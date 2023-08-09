@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="https://www.thymeleaf.org/" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>Panel administratora - Serwis ogłoszeniowy</title>
+    <link rel="stylesheet" href="../../static/style/main.css" th:href="@{../style/main.css}">
+</head>
+<body>
+<header>
+    <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
+    <h3>Panel administratora</h3>
+    <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
+    <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
+    <!--            <form method="post" th:action="@{/logout}">-->
+    <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
+    <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+    <!--            </form>-->
+</header>
+<nav class="navigation">
+    <a class="category" th:href="@{/admin/bans}" href="#">Blokady kont</a>
+    <a class="category" th:href="@{/admin/admins}" href="#">Administratorzy</a>
+    <a class="category" th:href="@{/admin/categories}" href="#">Kategorie</a>
+</nav>
+<a th:href="@{../}">Powróć do strony głównej</a>
+<main>
+    <div class="search-div">
+        <form th:action="@{/admin/bans}" method="get">
+            <label for="username">
+                <input type="text" name="username" id="username" placeholder="Nazwa użytkownika">
+            </label>
+            <button type="submit">Szukaj blokad według użytkowników</button>
+        </form>
+    </div>
+    <div>
+        <a th:href="@{/admin/add-ban}">Dodaj blokadę</a>
+    </div>
+    <table class="bans">
+        <tr>
+            <th>Użytkownik</th>
+            <th>Kto nadał</th>
+            <th>Kiedy nałożone</th>
+            <th>Przyczyna</th>
+            <th>Do kiedy</th>
+            <th>Wygasło?</th>
+            <th>Edytuj</th>
+            <th>Usuń</th>
+        </tr>
+        <tr th:each="ban: ${bans}">
+            <td th:text="*{ban.client}"></td>
+            <td th:text="*{ban.adminId}"></td>
+            <td th:text="*{ban.start}"></td>
+            <td th:text="*{ban.reason}"></td>
+            <td th:text="*{ban.finish}"></td>
+            <td th:text="${ban.finish.isBefore(#dates.createNow())} ? 'Tak' : 'Nie'"></td>
+            <td><a th:href="@{/admin/edit-ban?id=${ban.id}}"></a></td>
+            <td><a th:href="@{/admin/delete-ban?id=${ban.id}}"></a></td>
+        </tr>
+    </table>
+    </main>
+    <div>
+        <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
+        <label for="page-dropdown">
+            <select th:remove="all-but-first" id="page-dropdown">
+                <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
+                <option value="2">2</option>
+            </select>
+        </label>
+    </div>
+
+    <footer>
+        &copy; Mikołaj Diakowski
+    </footer>
+    <script type="text/javascript">
+        let elementById = document.getElementById("page-dropdown");
+        elementById.addEventListener("change", function () {
+            let page = elementById.value;
+            window.location.href = "/admin/?page=" + page;
+            if (new URLSearchParams(window.location.search).get("userid") == null)
+                window.location.href+= "&userid=" + page;
+        });
+    </script>
+    </body>
+</html>

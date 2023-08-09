@@ -2,11 +2,11 @@ package pl.diakowski.announcementwebsite.client;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
+import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.client.exception.OldPasswordDoesNotMatchException;
 import pl.diakowski.announcementwebsite.client.exception.PasswordsDoNotMatchException;
 
@@ -61,7 +61,9 @@ public class ClientService {
 
     @Transactional
     public void changePassword(ClientDto dto, String oldPassword, String newPassword, String repeatedNewPassword)
-            throws OldPasswordDoesNotMatchException, PasswordsDoNotMatchException {
+            throws OldPasswordDoesNotMatchException,
+            PasswordsDoNotMatchException,
+            ClientNotFoundException {
         Optional<Client> optionalClient = clientRepository.findById(dto.id());
         optionalClient.ifPresentOrElse(client -> {
             if (!passwordEncoder.matches(oldPassword, client.getPassword()))
@@ -72,13 +74,13 @@ public class ClientService {
             client.setPassword(passwordEncoder.encode(newPassword));
             clientRepository.save(client);
         }, () -> {
-            throw new UsernameNotFoundException("No such element found");
+            throw new ClientNotFoundException("No such element found");
         });
     }
 
-    public ClientDto findByUsername(String name) throws NullPointerException {
+    public ClientDto findByUsername(String name) throws ClientNotFoundException {
         return clientRepository.findByUsername(name)
                 .map(ClientDtoMapper::map)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ClientNotFoundException("User not found"));
     }
 }

@@ -17,11 +17,13 @@
     <!--            <form method="post" th:action="@{/logout}">-->
     <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
     <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+    <a th:href="@{/}" href="#">Powróć do strony głównej</a>
     <!--            </form>-->
   </header>
   <nav class="navigation">
-    <a class="category" th:href="@{/admin/accounts}" href="#">Blokady kont</a>
+    <a class="category" th:href="@{/admin/bans}" href="#">Blokady kont</a>
     <a class="category" th:href="@{/admin/admins}" href="#">Administratorzy</a>
+    <a class="category" th:href="@{/admin/categories}" href="#">Kategorie</a>
   </nav>
   </body>
 </html>
