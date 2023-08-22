@@ -7,6 +7,7 @@ import pl.diakowski.announcementwebsite.ban.dto.BanDto;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
 import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
+import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
 import pl.diakowski.announcementwebsite.client.ClientRepository;
 import pl.diakowski.announcementwebsite.client.ClientRoleRepository;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
@@ -124,5 +125,17 @@ public class BanService {
 	public Integer getPages() {
 		return banRepository.findAll(PageRequest.ofSize(50))
 				.getTotalPages();
+	}
+
+	/**
+	 * Method for checking if the client is banned. It checks if the finish date is after the current date.
+	 * @since 1.0
+	 * @param clientDto Client dto of the client.
+	 * @return True if the client is banned, false otherwise.
+	 */
+	public Boolean checkIfBanned(ClientDto clientDto) {
+		return banRepository.findAllByClient(ClientDtoMapper.map(clientDto))
+				.stream()
+				.anyMatch(ban -> ban.getFinish().isBefore(LocalDateTime.now()));
 	}
 }

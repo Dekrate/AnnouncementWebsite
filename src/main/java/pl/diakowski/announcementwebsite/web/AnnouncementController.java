@@ -14,6 +14,7 @@ import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
+import pl.diakowski.announcementwebsite.ban.BanService;
 import pl.diakowski.announcementwebsite.category.CategoryService;
 import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientService;
@@ -37,15 +38,17 @@ public class AnnouncementController {
 	private final CategoryService categoryService;
 	private final PictureService pictureService;
 	private final PolicyFactory htmlPolicyFactory;
+	private final BanService banService;
 
 	public AnnouncementController(AnnouncementService announcementService,
 	                              ClientService clientService,
-	                              CategoryService categoryService, PictureService pictureService, PolicyFactory htmlPolicyFactory) {
+	                              CategoryService categoryService, PictureService pictureService, PolicyFactory htmlPolicyFactory, BanService banService) {
 		this.announcementService = announcementService;
 		this.clientService = clientService;
 		this.categoryService = categoryService;
 		this.pictureService = pictureService;
 		this.htmlPolicyFactory = htmlPolicyFactory;
+		this.banService = banService;
 	}
 
 	/**
@@ -59,6 +62,9 @@ public class AnnouncementController {
 		model.addAttribute("categories", categoryService.findAllCategories());
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ClientDto clientDto = clientService.findByUsername(authentication.getName());
+		if (banService.checkIfBanned(clientDto)) {
+			model.addAttribute("banned", "Nie możesz dodać ogłoszenia, ponieważ jesteś zbanowany.");
+		}
 		model.addAttribute("client", clientDto);
 		if (clientDto.contactMethodDto() == null) { //TODO add contact method
 			model.addAttribute("error", "Najpierw dodaj metodę kontaktu.");
@@ -83,6 +89,11 @@ public class AnnouncementController {
 		newAnnouncementDto.setContent(htmlPolicyFactory.sanitize(newAnnouncementDto.getContent()));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ClientDto clientDto = clientService.findByUsername(authentication.getName());
+		if (banService.checkIfBanned(clientDto)) {
+			model.addAttribute("error", "Nie możesz dodać ogłoszenia, ponieważ jesteś zbanowany.");
+			redirectView.setUrl("/add-announcement?errore");
+			return redirectView;
+		}
 		try {
 			Set<PictureDto> save = pictureService.saveOnDisk(pictures);
 			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, save, clientDto);

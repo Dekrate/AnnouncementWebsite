@@ -28,7 +28,8 @@
 </nav>
 <main>
   <a th:href="@{/client/contact-method}" th:if="${client.contactMethodDto == null}" th:text="${error}"></a>
-  <form action="/add-announcement" method="post" enctype="multipart/form-data">
+  <p th:text="${banned}" th:if="${banned != null}"></p>
+  <form action="/add-announcement" method="post" enctype="multipart/form-data" th:if="${banned == null}">
     <label>Wybierz kategorię<br />
       <select name="category">
         <option th:each="category: ${categories}" th:value="${category.name.toLowerCase()}" th:text="${category.name}">Samochody</option>
