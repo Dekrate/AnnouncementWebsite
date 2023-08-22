@@ -27,22 +27,16 @@
 <a th:href="@{../}">Powróć do strony głównej</a>
 <main>
     <div>
-        <form action="/admin/add-admin" method="post">
-            <label for="username"></label><input type="text" name="username" id="username" placeholder="Nazwa użytkownika">
-            <label for="reason"></label><input type="text" name="reason" id="reason" placeholder="Przyczyna">
-            <label for="finish"></label><input type="datetime" name="finish" id="finish" placeholder="Data zakończenia (może być pusta)">
+        <p style="color: red;" th:text="${error}" th:if="${error != null}"></p>
+        <form action="/admin/add-ban" method="post">
+            <label for="username"></label><input type="text" name="username" id="username" required placeholder="Nazwa użytkownika">
+            <label for="reason"></label><input type="text" name="reason" id="reason" required placeholder="Przyczyna">
+            <label for="finish"></label><input type="datetime-local" name="finish" id="finish" required placeholder="Data zakończenia (może być pusta)">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+            <button type="submit">Dodaj</button>
         </form>
     </div>
 </main>
-<div>
-    <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
-    <label for="page-dropdown">
-        <select th:remove="all-but-first" id="page-dropdown">
-            <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
-            <option value="2">2</option>
-        </select>
-    </label>
-</div>
 
 <footer>
     &copy; Mikołaj Diakowski

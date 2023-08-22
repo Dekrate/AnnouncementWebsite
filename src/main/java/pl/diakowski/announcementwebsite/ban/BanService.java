@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.ban.dto.BanDto;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
+import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
 import pl.diakowski.announcementwebsite.client.ClientRepository;
 import pl.diakowski.announcementwebsite.client.ClientRoleRepository;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
@@ -43,15 +44,21 @@ public class BanService {
 	 * which means that if an exception is thrown, the transaction will be rolled back (the ban won't be saved).
 	 * @param admin ClientDto object containing information about the admin.
 	 * @param banDto BanDto object containing information about the ban.
+	 * @throws ClientNotFoundException if the client to be banned is not found.
+	 * @throws AdminCannotBeBannedException if the client to be banned is an admin.
+	 * @throws FinishDateIsNotFutureException if the finish date is not in the future.
 	 * @since 1.0
 	 */
 	@Transactional
 	public void banUser(ClientDto admin, NewBanDto banDto)
-			throws ClientNotFoundException, AdminCannotBeBannedException {
+			throws ClientNotFoundException, AdminCannotBeBannedException,
+			FinishDateIsNotFutureException {
 		if (clientRepository.findByUsername(banDto.username()).orElseThrow(ClientNotFoundException::new)
 				.getClientRoles().stream()
 				.anyMatch(clientRole -> clientRole.getName().equals("ADMIN")))
 			throw new AdminCannotBeBannedException("Admin cannot be banned!");
+		if (banDto.finish().isBefore(LocalDateTime.now()) || banDto.finish().isEqual(LocalDateTime.now()))
+			throw new FinishDateIsNotFutureException("Finish date cannot be before the current date!");
 		banRepository.save(new Ban(clientRepository.findByUsername(banDto.username()).orElseThrow(ClientNotFoundException::new),
 				admin.id(),
 				banDto.reason(),

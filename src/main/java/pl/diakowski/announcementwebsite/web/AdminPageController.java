@@ -13,6 +13,7 @@ import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.ban.BanService;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
+import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
 import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.client.exception.ClientRoleNotFoundException;
@@ -118,7 +119,7 @@ public class AdminPageController {
 			} catch (ClientNotFoundException e) {
 				model.addAttribute("bans", banService.getBans(page));
 				model.addAttribute("pages", banService.getPages());
-				return "admin/all-ans";
+				return "admin/all-bans";
 			}
 			return "admin/all-bans";
 		} else {
@@ -156,15 +157,16 @@ public class AdminPageController {
 			if (adminService.checkIfAdmin()) {
 				banService.banUser(clientService.findByUsername(SecurityContextHolder
 						.getContext().getAuthentication().getName()), newBanDto);
+				model.addAttribute("success", "Ban added successfully!");
 			} else {
 				model.addAttribute("error", "Nie jesteś administratorem!");
 			}
 		} catch (ClientNotFoundException e) {
 			model.addAttribute("error", "Klient nieznaleziony!");
-			return "redirect:/admin/add-ban";
 		} catch (AdminCannotBeBannedException e) {
 			model.addAttribute("error", "Nie możesz zbanować innego administratora!");
-			return "redirect:/admin/add-ban";
+		} catch (FinishDateIsNotFutureException e) {
+			model.addAttribute("error", "Data zakończenia musi być w przyszłości!");
 		}
 		return "admin/add-ban";
 	}

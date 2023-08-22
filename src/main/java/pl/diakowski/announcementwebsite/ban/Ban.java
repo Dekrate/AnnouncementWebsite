@@ -1,6 +1,7 @@
 package pl.diakowski.announcementwebsite.ban;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import pl.diakowski.announcementwebsite.client.Client;
 
@@ -25,6 +26,7 @@ public class Ban {
 	private String reason;
 	@NotNull
 	private LocalDateTime start;
+	@Future
 	private LocalDateTime finish;
 
 	public Ban() {
