@@ -12,6 +12,21 @@
       </database-info>
     </database-infos>
   </component>
+  <component name="JpaLiquibaseChangesConfig">
+    <exclude-change idName="announcement" tagName="createTable" />
+    <exclude-change idName="ban" tagName="createTable" />
+    <exclude-change idName="category" tagName="createTable" />
+    <exclude-change idName="client" tagName="createTable" />
+    <exclude-change idName="client_client_roles" tagName="createTable" />
+    <exclude-change idName="client_role" tagName="createTable" />
+    <exclude-change idName="picture" tagName="createTable" />
+    <exclude-change idName="FK_ANNOUNCEMENT_ON_AUTHOR" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_BAN_ON_CLIENT" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_CLIENT_ON_CONTACTMETHOD" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="FK_PICTURE_ON_ANNOUNCEMENT" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="fk_cliclirol_on_client" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="fk_cliclirol_on_client_role" tagName="addForeignKeyConstraint" />
+  </component>
   <component name="PersistenceUnitSettings">
     <persistence-units>
       <persistence-unit name="Default" defaultIncludeChangeLogFile="src/main/resources/db/changelog/db.changelog-primary.xml">

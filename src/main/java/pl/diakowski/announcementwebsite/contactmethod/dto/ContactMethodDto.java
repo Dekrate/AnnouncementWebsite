@@ -1,6 +1,5 @@
 package pl.diakowski.announcementwebsite.contactmethod.dto;
 
-import pl.diakowski.announcementwebsite.address.dto.AddressDto;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethod;
 
 /**
@@ -10,25 +9,16 @@ public final class ContactMethodDto {
 	private Long id;
 	private String email;
 	private String phoneNumber;
-	private AddressDto addressDto;
 
 	public ContactMethodDto(Long id,
 	                        String email,
-	                        String phoneNumber,
-	                        AddressDto addressDto) {
+	                        String phoneNumber) {
 		this.id = id;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.addressDto = addressDto;
-	}
-
-	public ContactMethodDto(String email, String phoneNumber) {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 	}
 
-	public ContactMethodDto(Long id, String email, String phoneNumber) {
-		this.id = id;
+	public ContactMethodDto(String email, String phoneNumber) {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 	}
@@ -60,11 +50,4 @@ public final class ContactMethodDto {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public AddressDto getAddressDto() {
-		return addressDto;
-	}
-
-	public void setAddressDto(AddressDto addressDto) {
-		this.addressDto = addressDto;
-	}
 }

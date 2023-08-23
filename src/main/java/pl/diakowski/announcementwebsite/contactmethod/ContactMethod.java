@@ -3,7 +3,6 @@ package pl.diakowski.announcementwebsite.contactmethod;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import pl.diakowski.announcementwebsite.address.Address;
 import pl.diakowski.announcementwebsite.client.Client;
 
 @Entity
@@ -14,8 +13,6 @@ public class ContactMethod {
     @Email
     private String email;
     private String phoneNumber;
-    @OneToOne
-    private Address address;
 
     @OneToOne
     @NotNull(message = "Client cannot be null")
@@ -23,30 +20,20 @@ public class ContactMethod {
 
 
 
-    public ContactMethod(Long id, String email, String phoneNumber, Address address, @NotNull Client client) {
+    public ContactMethod(Long id, String email, String phoneNumber, @NotNull Client client) {
         this.id = id;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.address = address;
         this.client = client;
     }
 
-    public ContactMethod(String email, String phoneNumber, Address address, @NotNull Client client) {
+    public ContactMethod(String email, String phoneNumber, @NotNull Client client) {
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.address = address;
         this.client = client;
     }
 
     public ContactMethod() {
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public Long getId() {
