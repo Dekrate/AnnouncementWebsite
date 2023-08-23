@@ -41,7 +41,6 @@
       <h5>Dane kontaktowe</h5>
       <a th:href="|mailto:${announcement.contactMethod.email}|" th:text="${announcement.contactMethod.email}" href="#">abc@abc.pl</a>
       <a th:href="|tel:${announcement.contactMethod.phoneNumber}|" href="#">+48 123 456 789</a>
-<!--      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>-->
     </section>
   </article>
 </main>

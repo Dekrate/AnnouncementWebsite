@@ -4,15 +4,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.diakowski.announcementwebsite.admin.exception.AdminTriedToDeleteAnotherAdminException;
 import pl.diakowski.announcementwebsite.admin.exception.ClientAlreadyAdminException;
 import pl.diakowski.announcementwebsite.admin.exception.ClientNotAnAdminException;
-import pl.diakowski.announcementwebsite.client.Client;
-import pl.diakowski.announcementwebsite.client.ClientRepository;
-import pl.diakowski.announcementwebsite.client.ClientRole;
-import pl.diakowski.announcementwebsite.client.ClientRoleRepository;
+import pl.diakowski.announcementwebsite.client.*;
+import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.client.exception.ClientRoleNotFoundException;
 import pl.diakowski.announcementwebsite.web.AdminPageController;
+
+import java.util.List;
 
 /**
  * Service for admin operations. It is used by {@link AdminPageController}.
@@ -81,19 +82,30 @@ public class AdminService {
 	/**
 	 * Removes a client as an admin. If the client isn't an admin or isn't found, it throws an exception.
 	 * This method is transactional, so if an exception is thrown, the transaction is rolled back.
-	 * @param username Username of the client to be removed as an admin
+	 * @param id of the client to be removed as an admin
+	 * @param adminDeletingAnotherAdminId id of the admin deleting another admin
 	 * @since 1.0
 	 * @see Transactional
 	 * @throws ClientRoleNotFoundException If the role ROLE_ADMIN is not found
 	 * @throws ClientNotFoundException If the client is not found
 	 */
 	@Transactional
-	public void removeAdmin(String username) throws ClientRoleNotFoundException, ClientNotFoundException {
-		clientRepository.findByUsername(username).ifPresentOrElse(client -> {
-			client.getClientRoles().remove(clientRoleRepository.findByName("ROLE_ADMIN")
-					.orElseThrow(() -> new ClientRoleNotFoundException("This user isn't an admin!")));
-		}, () -> {
-			throw new ClientNotFoundException(String.format("%s doesn't exist!", username));
-		});
+	public void removeAdmin(Long adminDeletingAnotherAdminId, Long id) throws ClientRoleNotFoundException, ClientNotFoundException {
+		if (adminDeletingAnotherAdminId == 1 && !adminDeletingAnotherAdminId.equals(id)) {
+			clientRepository.findById(id).ifPresentOrElse(client -> {
+				client.getClientRoles().remove(clientRoleRepository.findByName("ROLE_ADMIN")
+						.orElseThrow(() -> new ClientRoleNotFoundException("This user isn't an admin!")));
+			}, () -> {
+				throw new ClientNotFoundException(String.format("Client having id %s doesn't exist!", id));
+			});
+		} else {
+			throw new AdminTriedToDeleteAnotherAdminException("You are not an admin!");
+		}
+	}
+
+	public List<ClientDto> getAllAdmins() {
+		return clientRepository.findByClientRoles_Name("ROLE_ADMIN")
+				.stream().map(ClientDtoMapper::map)
+				.toList();
 	}
 }

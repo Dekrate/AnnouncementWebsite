@@ -38,7 +38,7 @@
     <div>
         <a th:href="@{/admin/add-ban}">Dodaj blokadę</a>
     </div>
-    <table class="bans">
+    <table class="table">
         <tr>
             <th>Użytkownik</th>
             <th>Kto nadał</th>
@@ -50,14 +50,14 @@
             <th>Usuń</th>
         </tr>
         <tr th:each="ban: ${bans}">
-            <td th:text="*{ban.client}"></td>
+            <td th:text="*{ban.client.name}"></td>
             <td th:text="*{ban.adminId}"></td>
-            <td th:text="*{ban.start}"></td>
+            <td th:text="${#temporals.format(ban.start, 'dd MMMM yyyy HH:mm')}"></td>
             <td th:text="*{ban.reason}"></td>
-            <td th:text="*{ban.finish}"></td>
-            <td th:text="${ban.finish.isBefore(#dates.createNow())} ? 'Tak' : 'Nie'"></td>
-            <td><a th:href="@{/admin/edit-ban?id=${ban.id}}"></a></td>
-            <td><a th:href="@{/admin/delete-ban?id=${ban.id}}"></a></td>
+            <td th:text="${#temporals.format(ban.finish, 'dd MMMM yyyy HH:mm')}"></td>
+            <td th:text="${now.isAfter(ban.finish)} ? 'Tak' : 'Nie'"></td>
+            <td><a th:href="|/admin/edit-ban?id=${ban.id}|" th:text="Edytuj"></a></td>
+            <td><a th:href="|/admin/delete-ban?id=${ban.id}|" th:text="Usuń"></a></td>
         </tr>
     </table>
     </main>

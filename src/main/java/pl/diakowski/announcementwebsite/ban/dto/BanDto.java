@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public record BanDto(Long id,
                      ClientDto client,
                      Long adminId,
-					 String reason,
+                     String reason,
                      LocalDateTime start,
                      LocalDateTime finish) {
 }

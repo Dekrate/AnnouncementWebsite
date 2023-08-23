@@ -7,16 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.diakowski.announcementwebsite.admin.AdminService;
+import pl.diakowski.announcementwebsite.admin.exception.AdminTriedToDeleteAnotherAdminException;
 import pl.diakowski.announcementwebsite.admin.exception.ClientAlreadyAdminException;
 import pl.diakowski.announcementwebsite.admin.exception.ClientNotAnAdminException;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.ban.BanService;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
+import pl.diakowski.announcementwebsite.ban.exception.BanNotFoundException;
 import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
 import pl.diakowski.announcementwebsite.client.ClientService;
+import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.client.exception.ClientRoleNotFoundException;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class AdminPageController {
@@ -111,6 +116,7 @@ public class AdminPageController {
 	                      Model model) {
 
 		if (adminService.checkIfAdmin()) {
+			model.addAttribute("now", LocalDateTime.now());
 			model.addAttribute("page", page);
 			try {
 				Long id = clientService.findByUsername(username).id();
@@ -169,5 +175,72 @@ public class AdminPageController {
 			model.addAttribute("error", "Data zakończenia musi być w przyszłości!");
 		}
 		return "admin/add-ban";
+	}
+
+	@GetMapping("/admin/edit-ban")
+	public String editBanPage(@RequestParam Long id, Model model) {
+		if (adminService.checkIfAdmin()) {
+			try {
+				model.addAttribute("ban", banService.getBanById(id));
+			} catch (BanNotFoundException e) {
+				model.addAttribute("error", "Ban nieznaleziony!");
+				return "redirect:/admin/bans";
+			}
+			return "admin/edit-ban";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@PostMapping("/admin/edit-ban")
+	public String editBan(@RequestParam Long id, NewBanDto newBanDto, Model model) {
+		if (adminService.checkIfAdmin()) {
+			try {
+				banService.editBan(id, newBanDto);
+			} catch (BanNotFoundException e) {
+				model.addAttribute("error", "Ban nieznaleziony!");
+				return "redirect:/admin/bans";
+			} catch (FinishDateIsNotFutureException e) {
+				model.addAttribute("error", "Data zakończenia musi być w przyszłości!");
+				return "redirect:/admin/bans";
+			}
+			return "redirect:/admin/bans";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@GetMapping("/admin/admins")
+	public String adminsPage(Model model) {
+		if (adminService.checkIfAdmin()) {
+			model.addAttribute("admins", adminService.getAllAdmins());
+			return "admin/admins";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@GetMapping("/admin/remove-admin")
+	public String removeAdmin(@RequestParam Long id, Model model) {
+		if (adminService.checkIfAdmin()) {
+			try {
+				ClientDto admin = clientService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+				adminService.removeAdmin(admin.id(), id);
+				model.addAttribute("success", "Admin removed successfully!");
+			} catch (ClientNotFoundException e) {
+				model.addAttribute("error", "Klient nieznaleziony!");
+			} catch (ClientRoleNotFoundException e) {
+				model.addAttribute("error", "Rola administratora nieznaleziona!");
+			} catch (AdminTriedToDeleteAnotherAdminException e) {
+				model.addAttribute("error", "Nie możesz usunąć innego administratora!");
+			}
+			return "admin/admins";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
 	}
 }

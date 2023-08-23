@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.diakowski.announcementwebsite.ban.dto.BanDto;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
+import pl.diakowski.announcementwebsite.ban.exception.BanNotFoundException;
 import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
 import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
 import pl.diakowski.announcementwebsite.client.ClientRepository;
@@ -137,5 +138,17 @@ public class BanService {
 		return banRepository.findAllByClient(ClientDtoMapper.map(clientDto))
 				.stream()
 				.anyMatch(ban -> ban.getFinish().isBefore(LocalDateTime.now()));
+	}
+
+	public BanDto getBanById(Long id) throws BanNotFoundException {
+		return banRepository.findById(id).map(BanDtoMapper::map).orElseThrow(BanNotFoundException::new);
+	}
+
+	@Transactional
+	public void editBan(Long id, NewBanDto newBanDto) {
+		Ban ban = banRepository.findById(id).orElseThrow(BanNotFoundException::new);
+		ban.setReason(newBanDto.reason());
+		ban.setFinish(newBanDto.finish());
+		banRepository.save(ban);
 	}
 }

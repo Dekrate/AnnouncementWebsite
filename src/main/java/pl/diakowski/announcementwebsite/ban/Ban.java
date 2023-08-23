@@ -20,7 +20,6 @@ public class Ban {
 	private Long id;
 	@ManyToOne
 	private Client client;
-	@NotNull
 	private Long adminId;
 	@NotNull
 	private String reason;
@@ -33,7 +32,7 @@ public class Ban {
 	}
 
 	public Ban(Client client,
-	           @NotNull Long adminId,
+	           Long adminId,
 	           @NotNull String reason,
 	           @NotNull LocalDateTime start,
 	           LocalDateTime finish) {
@@ -46,7 +45,7 @@ public class Ban {
 
 	public Ban(Long id,
 	           Client client,
-	           @NotNull Long adminId,
+	           Long adminId,
 	           @NotNull String reason,
 	           @NotNull LocalDateTime start,
 	           LocalDateTime finish) {
@@ -74,11 +73,11 @@ public class Ban {
 		this.client = client;
 	}
 
-	public @NotNull Long getAdminId() {
+	public Long getAdminId() {
 		return adminId;
 	}
 
-	public void setAdminId(@NotNull Long adminId) {
+	public void setAdminId(Long adminId) {
 		this.adminId = adminId;
 	}
 
