@@ -145,9 +145,11 @@ public class BanService {
 	}
 
 	@Transactional
-	public void editBan(Long id, NewBanDto newBanDto) {
+	public void editBan(Long id, NewBanDto newBanDto) throws FinishDateIsNotFutureException {
 		Ban ban = banRepository.findById(id).orElseThrow(BanNotFoundException::new);
 		ban.setReason(newBanDto.reason());
+		if (newBanDto.finish().isBefore(LocalDateTime.now()) || newBanDto.finish().isEqual(LocalDateTime.now()))
+			throw new FinishDateIsNotFutureException("Finish date cannot be before the current date!");
 		ban.setFinish(newBanDto.finish());
 		banRepository.save(ban);
 	}

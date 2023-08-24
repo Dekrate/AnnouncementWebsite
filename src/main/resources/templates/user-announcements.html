@@ -59,6 +59,8 @@
   </div>
 </main>
 <footer>
+  <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" href="#">Panel administratora</a>
+  <br />
   &copy; Mikołaj Diakowski
 </footer>
 <script type="text/javascript">

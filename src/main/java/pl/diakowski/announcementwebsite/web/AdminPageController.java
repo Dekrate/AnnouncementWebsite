@@ -6,10 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.admin.AdminService;
 import pl.diakowski.announcementwebsite.admin.exception.AdminTriedToDeleteAnotherAdminException;
 import pl.diakowski.announcementwebsite.admin.exception.ClientAlreadyAdminException;
-import pl.diakowski.announcementwebsite.admin.exception.ClientNotAnAdminException;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.ban.BanService;
 import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
@@ -40,11 +41,13 @@ public class AdminPageController {
 	}
 
 	//TODO report system
+
 	/**
 	 * Shows the add-admin page. If the user is not an admin, it redirects to the home page.
-	 * @since 1.0
+	 *
 	 * @param model Model for the view
 	 * @return "admin" if the user is an admin, "redirect:/" if not
+	 * @since 1.0
 	 */
 	@GetMapping("/admin/add-admin")
 	public String addAdminPage(Model model) {
@@ -61,31 +64,39 @@ public class AdminPageController {
 	 * If the client is already an admin or isn't found, it throws an exception.
 	 * If the user is not an admin, it redirects to the home page.
 	 * Otherwise, it adds the client as an admin.
-	 * @since 1.0
+	 *
 	 * @param username Username of the client to be added as an admin
-	 * @param model Model for the view
+	 * @param model    Model for the view
 	 * @return "add-admin" if the user is an admin, "redirect:/" if not
+	 * @since 1.0
 	 */
 	@PostMapping("/admin/add-admin")
-	public String addAdmin(String username, Model model) {
-			try {
-				adminService.addAdmin(username);
-				model.addAttribute("success", "Admin added successfully!");
-			} catch (ClientNotFoundException e) {
-				model.addAttribute("error", "Klient nieznaleziony!");
-			} catch (ClientRoleNotFoundException e) {
-				model.addAttribute("error", "Rola administratora nieznaleziona!");
-			} catch (ClientAlreadyAdminException e) {
-				model.addAttribute("error", "Ten użytkownik jest już administratorem!");
-			} catch (ClientNotAnAdminException e) {
-				model.addAttribute("error", "Nie jesteś administratorem!");
-				return "redirect:/";
-			}
-			return "add-admin";
+	public RedirectView addAdmin(String username, RedirectAttributes model) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		if (!adminService.checkIfAdmin()) {
+			model.addFlashAttribute("error", "Nie jesteś administratorem!");
+			redirectView.setUrl("/");
+			return redirectView;
+		}
+		redirectView.setHttp10Compatible(false);
+		try {
+			adminService.addAdmin(username);
+			model.addFlashAttribute("success", "Dodano administratora!");
+		} catch (ClientNotFoundException e) {
+			model.addFlashAttribute("error", "Klient nieznaleziony!");
+		} catch (ClientRoleNotFoundException e) {
+			model.addFlashAttribute("error", "Rola administratora nieznaleziona!");
+		} catch (ClientAlreadyAdminException e) {
+			model.addFlashAttribute("error", "Ten użytkownik jest już administratorem!");
+		}
+		redirectView.setUrl("/admin/add-admin");
+		return redirectView;
 	}
 
 	/**
 	 * Shows the admin page. If the user is not an admin, it redirects to the home page.
+	 *
 	 * @param model Model for the view
 	 * @return "admin" if the user is an admin, "redirect:/" if not
 	 */
@@ -106,13 +117,14 @@ public class AdminPageController {
 
 	/**
 	 * Shows bans page. If the user is not an admin, it redirects to the home page.
-	 * @param page Page number
+	 *
+	 * @param page  Page number
 	 * @param model Model for the view
 	 * @return "clients" if the user is an admin, "redirect:/" if not
 	 */
 	@GetMapping("/admin/bans")
 	public String banPage(@RequestParam(required = false, defaultValue = "1") Integer page,
-						  @RequestParam(required = false) String username,
+	                      @RequestParam(required = false) String username,
 	                      Model model) {
 
 		if (adminService.checkIfAdmin()) {
@@ -120,8 +132,8 @@ public class AdminPageController {
 			model.addAttribute("page", page);
 			try {
 				Long id = clientService.findByUsername(username).id();
-					model.addAttribute("bans", banService.getBans(id, page));
-					model.addAttribute("pages", banService.getPages(id));
+				model.addAttribute("bans", banService.getBans(id, page));
+				model.addAttribute("pages", banService.getPages(id));
 			} catch (ClientNotFoundException e) {
 				model.addAttribute("bans", banService.getBans(page));
 				model.addAttribute("pages", banService.getPages());
@@ -136,9 +148,10 @@ public class AdminPageController {
 
 	/**
 	 * Shows the add-ban page. If the user is not an admin, it redirects to the home page.
-	 * @since 1.0
+	 *
 	 * @param model Model for the view
 	 * @return "admin/add-ban" if the user is an admin, "redirect:/" if not
+	 * @since 1.0
 	 */
 	@GetMapping("/admin/add-ban")
 	public String addBanPage(Model model) {
@@ -152,10 +165,11 @@ public class AdminPageController {
 
 	/**
 	 * Adds a ban to a user. If the user is not an admin, it redirects to the home page.
-	 * @since 1.0
+	 *
 	 * @param newBanDto DTO for the new ban
-	 * @param model Model for the view
+	 * @param model     Model for the view
 	 * @return "admin/add-ban" if the user is an admin, "redirect:/" if not
+	 * @since 1.0
 	 */
 	@PostMapping("/admin/add-ban")
 	public String addBan(NewBanDto newBanDto, Model model) {
@@ -194,21 +208,48 @@ public class AdminPageController {
 	}
 
 	@PostMapping("/admin/edit-ban")
-	public String editBan(@RequestParam Long id, NewBanDto newBanDto, Model model) {
+	public RedirectView editBan(@RequestParam Long id, NewBanDto newBanDto, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
 		if (adminService.checkIfAdmin()) {
 			try {
 				banService.editBan(id, newBanDto);
 			} catch (BanNotFoundException e) {
-				model.addAttribute("error", "Ban nieznaleziony!");
-				return "redirect:/admin/bans";
+				attributes.addFlashAttribute("error", "Ban nieznaleziony!");
+				redirectView.setUrl("/admin/bans");
+				return redirectView;
 			} catch (FinishDateIsNotFutureException e) {
-				model.addAttribute("error", "Data zakończenia musi być w przyszłości!");
-				return "redirect:/admin/bans";
+				attributes.addFlashAttribute("error", "Data zakończenia musi być w przyszłości!");
+				redirectView.setUrl("/admin/bans");
+				return redirectView;
 			}
-			return "redirect:/admin/bans";
+			redirectView.setUrl("/admin/bans");
+			return redirectView;
 		} else {
-			model.addAttribute("error", "Nie jesteś administratorem!");
-			return "redirect:/";
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			redirectView.setUrl("/");
+			return redirectView;
+		}
+	}
+
+	@GetMapping("/admin/delete-ban")
+	public RedirectView deleteBan(@RequestParam Long id, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		if (adminService.checkIfAdmin()) {
+			try {
+				banService.unbanUser(id);
+			} catch (BanNotFoundException e) {
+				attributes.addFlashAttribute("error", "Ban nieznaleziony!");
+				redirectView.setUrl("/admin/bans");
+				return redirectView;
+			}
+			redirectView.setUrl("/admin/bans");
+			return redirectView;
+		} else {
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			redirectView.setUrl("/");
+			return redirectView;
 		}
 	}
 
@@ -224,23 +265,32 @@ public class AdminPageController {
 	}
 
 	@GetMapping("/admin/remove-admin")
-	public String removeAdmin(@RequestParam Long id, Model model) {
+	public RedirectView removeAdmin(@RequestParam Long id, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
 		if (adminService.checkIfAdmin()) {
 			try {
 				ClientDto admin = clientService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 				adminService.removeAdmin(admin.id(), id);
-				model.addAttribute("success", "Admin removed successfully!");
+				attributes.addFlashAttribute("success", "Admin removed successfully!");
+				return redirectView;
 			} catch (ClientNotFoundException e) {
-				model.addAttribute("error", "Klient nieznaleziony!");
+				attributes.addFlashAttribute("error", "Klient nieznaleziony!");
+				redirectView.setUrl("/admin/admins");
+				return redirectView;
 			} catch (ClientRoleNotFoundException e) {
-				model.addAttribute("error", "Rola administratora nieznaleziona!");
+				attributes.addFlashAttribute("error", "Rola administratora nieznaleziona!");
+				redirectView.setUrl("/admin/admins");
+				return redirectView;
 			} catch (AdminTriedToDeleteAnotherAdminException e) {
-				model.addAttribute("error", "Nie możesz usunąć innego administratora!");
+				attributes.addFlashAttribute("error", "Nie możesz usunąć innego administratora!");
+				redirectView.setUrl("/admin/admins");
+				return redirectView;
 			}
-			return "admin/admins";
 		} else {
-			model.addAttribute("error", "Nie jesteś administratorem!");
-			return "redirect:/";
+			redirectView.setUrl("/");
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			return redirectView;
 		}
 	}
 }

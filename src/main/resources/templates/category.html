@@ -28,6 +28,7 @@
 <hr>
 <main>
   <article th:each="announcement: ${announcements}">
+    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
     <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
@@ -53,6 +54,8 @@
   </div>
 </main>
 <footer>
+  <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" href="#">Panel administratora</a>
+  <br />
   &copy; Mikołaj Diakowski
 </footer>
 <script type="text/javascript">

@@ -29,6 +29,7 @@
 <main>
   <h3 th:text="${error}"></h3>
   <article>
+    <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
     <a href="#" th:href="|category?id=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
     <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
     <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>

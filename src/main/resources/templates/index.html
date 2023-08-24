@@ -32,6 +32,7 @@
         <main>
             <h3 th:if="${announcements.isEmpty()}">Nie dodano jeszcze żadnych ogłoszeń!</h3>
             <article th:each="announcement: ${announcements}">
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
                 <a href="#" th:href="|category=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
                 <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
                 <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
@@ -49,6 +50,8 @@
             </article>
         </main>
         <footer>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" href="#">Panel administratora</a>
+            <br />
             &copy; Mikołaj Diakowski
         </footer>
     </body>

@@ -63,15 +63,12 @@ public class AdminService {
 	public void addAdmin(String username)
 			throws ClientRoleNotFoundException,
 			ClientNotFoundException,
-			ClientAlreadyAdminException,
-			ClientNotAnAdminException {
-		if (!checkIfAdmin())
-			throw new ClientNotAnAdminException("You are not an admin!");
-		ClientRole adminRole = clientRoleRepository.findByName("ROLE_ADMIN")
-				.orElseThrow(() -> new ClientRoleNotFoundException("ROLE_ADMIN not found"));
+			ClientAlreadyAdminException {
+		ClientRole adminRole = clientRoleRepository.findByName("ADMIN")
+				.orElseThrow(() -> new ClientRoleNotFoundException("ADMIN role not found"));
 		clientRepository.findByUsername(username)
 				.ifPresentOrElse(client -> {
-					if (client.getClientRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN")))
+					if (client.getClientRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")))
 						client.getClientRoles().add(adminRole);
 					else throw new ClientAlreadyAdminException("This user is already an admin!");
 				}, () -> {
@@ -104,7 +101,7 @@ public class AdminService {
 	}
 
 	public List<ClientDto> getAllAdmins() {
-		return clientRepository.findByClientRoles_Name("ROLE_ADMIN")
+		return clientRepository.findByClientRoles_Name("ADMIN")
 				.stream().map(ClientDtoMapper::map)
 				.toList();
 	}

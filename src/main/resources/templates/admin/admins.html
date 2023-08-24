@@ -26,11 +26,17 @@
 </nav>
 <a th:href="@{../}">Powróć do strony głównej</a>
 <main>
-    <div>
-        <a th:href="@{/admin/add-ban}">Dodaj blokadę</a>
-    </div>
+    <form action="/admin/add-admin" method="post">
+        <label for="name">
+            <input type="text" id="name" name="name" placeholder="Nazwa użytkownika" required>
+        </label>
+        <br />
+        <button type="submit">Dodaj administratora</button>
+    </form>
     <p>Tylko główny administrator może usuwać i dodawać administratorów!</p>
-    <table class="table">
+    <p th:if="${error} != null" th:text="${error}" class="error"></p>
+<!--    <p th:if="${success}" th:text="${success}" class="success"></p>-->
+    <table class="table" th:unless="${admins == null || admins.isEmpty()}">
         <tr>
             <th>Identyfikator</th>
             <th>Nazwa użytkownika</th>
@@ -38,7 +44,7 @@
         </tr>
         <tr th:each="admin: ${admins}">
             <td th:text="${admin.id}"></td>
-            <td th:text="${admin.name}"></td>
+            <td th:text="${admin.username}"></td>
             <td><a th:href="|/admin/remove-admin?id=${admin.id}|" th:text="Usuń"></a></td>
         </tr>
     </table>

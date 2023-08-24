@@ -26,6 +26,7 @@
 </nav>
 <a th:href="@{../}">Powróć do strony głównej</a>
 <main>
+    <p th:if="${error} != null" th:text="${error}" class="error"></p>
     <div class="search-div">
         <form th:action="@{/admin/bans}" method="get">
             <label for="username">
@@ -38,7 +39,9 @@
     <div>
         <a th:href="@{/admin/add-ban}">Dodaj blokadę</a>
     </div>
-    <table class="table">
+    <p th:if="${bans == null || bans.isEmpty()}" th:text="|Nie ma w systemie żadnych blokad.|"></p>
+
+    <table class="table" th:unless="${bans.isEmpty() || bans == null}">
         <tr>
             <th>Użytkownik</th>
             <th>Kto nadał</th>
