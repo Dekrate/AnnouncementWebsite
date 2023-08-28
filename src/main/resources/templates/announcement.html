@@ -32,7 +32,9 @@
     <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
     <a href="#" th:href="|category?id=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
     <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
-    <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
+    <div class="pictures">
+      <a th:each="picture: ${announcement.pictures}" th:href="@{${picture.path}}"><img th:src="@{${picture.path}}" alt=""/></a>
+    </div>
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
     <p th:utext="${announcement.content}">
       Sprzedam działającego Opla z rocznika 2024 r., w okazyjnej cenie 4000 zł.

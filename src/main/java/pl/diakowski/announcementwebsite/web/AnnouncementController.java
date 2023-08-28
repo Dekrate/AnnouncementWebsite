@@ -1,7 +1,6 @@
 package pl.diakowski.announcementwebsite.web;
 
 import org.owasp.html.PolicyFactory;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -9,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementService;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
@@ -21,10 +21,9 @@ import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.contactmethod.exception.ContactMethodNotFoundException;
 import pl.diakowski.announcementwebsite.picture.PictureService;
-import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
+import pl.diakowski.announcementwebsite.picture.exception.PictureTooBigException;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Controller for announcement pages. It is responsible for adding, editing, viewing and deleting announcements.
@@ -83,33 +82,33 @@ public class AnnouncementController {
 	@PostMapping("/add-announcement")
 	public RedirectView addAnnouncement(NewAnnouncementDto newAnnouncementDto,
 	                                    MultipartFile[] pictures,
-	                                    Model model) {
+	                                    RedirectAttributes model) {
 		RedirectView redirectView = new RedirectView();
 		redirectView.setHttp10Compatible(false);
 		newAnnouncementDto.setContent(htmlPolicyFactory.sanitize(newAnnouncementDto.getContent()));
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ClientDto clientDto = clientService.findByUsername(authentication.getName());
 		if (banService.checkIfBanned(clientDto)) {
-			model.addAttribute("error", "Nie możesz dodać ogłoszenia, ponieważ jesteś zbanowany.");
+			model.addFlashAttribute("error", "Nie możesz dodać ogłoszenia, ponieważ jesteś zbanowany.");
 			redirectView.setUrl("/add-announcement?errore");
 			return redirectView;
 		}
 		try {
-			Set<PictureDto> save = pictureService.saveOnDisk(pictures);
-			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, save, clientDto);
+			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, pictures, clientDto);
+			pictureService.saveOnDisk(pictures, saved);
 			redirectView.setUrl("/announcement?id=" + saved.getId());
-		} catch (IllegalArgumentException | OptimisticLockingFailureException e) {
-			model.addAttribute("error", "Nie udało się dodać ogłoszenia.");
-			redirectView.setUrl("/add-announcement?errora");
 		} catch (CategoryNotFoundException e) {
-			model.addAttribute("error", "Nie znaleziono kategorii.");
-			redirectView.setUrl("/add-announcement?errorb");
+			model.addFlashAttribute("error", "Nie znaleziono kategorii.");
+			redirectView.setUrl("/add-announcement");
 		} catch (ContactMethodNotFoundException | NullPointerException e) {
-			model.addAttribute("error", "Nie znaleziono metody kontaktu.");
-			redirectView.setUrl("/add-announcement?errorc");
+			model.addFlashAttribute("error", "Nie znaleziono metody kontaktu.");
+			redirectView.setUrl("/add-announcement");
 		} catch (IOException e) {
-			model.addAttribute("error", "Nie udało się zapisać zdjęć.");
-			redirectView.setUrl("/add-announcement?errord");
+			model.addFlashAttribute("error", "Nie udało się zapisać zdjęć.");
+			redirectView.setUrl("/add-announcement");
+		} catch (PictureTooBigException e) {
+			model.addFlashAttribute("error", "Zdjęcie jest za duże.");
+			redirectView.setUrl("/add-announcement");
 		}
 		return redirectView;
 	}
@@ -125,10 +124,9 @@ public class AnnouncementController {
 	public String announcementPage(Long id, Model model) {
 		try {
 			AnnouncementDto announcementDto = announcementService.findById(id);
-			Set<PictureDto> pictures = announcementDto.getPictures();
 			model.addAttribute("announcement", announcementDto);
 			model.addAttribute("categories", categoryService.findAllCategories());
-			model.addAttribute("pictures", pictures);
+//			model.addAttribute("pictures", pictureService.findPicturesByAnnouncementId(id));
 		} catch (AnnouncementNotFoundException e) {
 			model.addAttribute("error", "Nie znaleziono ogłoszenia.");
 		}

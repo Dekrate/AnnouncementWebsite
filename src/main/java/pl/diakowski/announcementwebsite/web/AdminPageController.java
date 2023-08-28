@@ -293,4 +293,27 @@ public class AdminPageController {
 			return redirectView;
 		}
 	}
+
+	@GetMapping("/admin/delete-announcement")
+	public RedirectView deleteAnnouncement(@RequestParam Long id, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		if (adminService.checkIfAdmin()) {
+			try {
+
+				adminService.removeAnnouncementById(id);
+				attributes.addFlashAttribute("success", "Ogłoszenie usunięte!");
+				redirectView.setUrl("/");
+				return redirectView;
+			} catch (IllegalArgumentException e) {
+				attributes.addFlashAttribute("error", "Wystąpił błąd!");
+				redirectView.setUrl("/");
+				return redirectView;
+			}
+		} else {
+			redirectView.setUrl("/");
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			return redirectView;
+		}
+	}
 }

@@ -20,7 +20,7 @@ public final class AnnouncementDto {
 	private LocalDateTime publicationTime;
 	private ClientDto author;
 	private ContactMethodDto contactMethod;
-	private Set<PictureDto> pictures;
+	Set<PictureDto> pictures;
 
 	public AnnouncementDto(Long id,
 	                       String title,

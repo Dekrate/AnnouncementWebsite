@@ -7,7 +7,6 @@ public class PictureDtoMapper {
         return new PictureDto(picture.getId(), picture.getPath());
     }
 
-    public static Picture map(PictureDto picture) {
-        return new Picture(picture.id(), picture.path());
-    }
+
+
 }

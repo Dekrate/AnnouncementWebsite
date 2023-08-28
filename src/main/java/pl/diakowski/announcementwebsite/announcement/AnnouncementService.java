@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
@@ -15,16 +16,12 @@ import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethodRepository;
 import pl.diakowski.announcementwebsite.contactmethod.exception.ContactMethodNotFoundException;
-import pl.diakowski.announcementwebsite.picture.PictureDtoMapper;
 import pl.diakowski.announcementwebsite.picture.PictureRepository;
-import pl.diakowski.announcementwebsite.picture.dto.PictureDto;
 import pl.diakowski.announcementwebsite.web.AnnouncementController;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Service for announcements. It is used in controllers.
@@ -88,7 +85,7 @@ public class AnnouncementService {
      * @throws ContactMethodNotFoundException when contact method is not found
      */
     @Transactional
-    public AnnouncementDto addAnnouncement(NewAnnouncementDto announcementDto, Set<PictureDto> pictures, ClientDto clientDto)
+    public AnnouncementDto addAnnouncement(NewAnnouncementDto announcementDto, MultipartFile[] pictures, ClientDto clientDto)
             throws CategoryNotFoundException, ContactMethodNotFoundException {
         if (clientDto.contactMethodDto() == null)
             throw new ContactMethodNotFoundException("Contact method not found");
@@ -101,7 +98,6 @@ public class AnnouncementService {
         announcement.setCategory(categoryRepository.findByName(announcementDto.getCategory())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found")));
         announcement.setAuthor(ClientDtoMapper.map(clientDto));
-        announcement.setPictures(pictures.stream().map(PictureDtoMapper::map).collect(Collectors.toSet()));
         Announcement save = announcementRepository.save(announcement);
         return AnnouncementDtoMapper.map(save);
     }
@@ -176,7 +172,6 @@ public class AnnouncementService {
                 .orElseThrow(() -> new AnnouncementNotFoundException("Announcement not found"));
         if (!clientDto.name().equals(announcement.getAuthor().getName()))
             throw new ClientNameAndAuthorNameDoNotEqualException("Client name and author name don't equal");
-        pictureRepository.deleteAll(announcement.getPictures());
         announcementRepository.deleteById(id);
     }
 }

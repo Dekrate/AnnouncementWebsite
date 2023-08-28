@@ -43,6 +43,20 @@ public class Announcement {
     @NotNull
     private String title;
 
+    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, Set<Picture> pictures, @NotNull String content, @NotNull String title) {
+        this.id = id;
+        this.category = category;
+        this.publicationTime = publicationTime;
+        this.author = author;
+        this.contactMethod = contactMethod;
+        this.pictures = pictures;
+        this.content = content;
+        this.title = title;
+    }
+
+    public Announcement() {
+    }
+
     public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, @NotNull String content, @NotNull String title) {
         this.id = id;
         this.category = category;
@@ -51,9 +65,6 @@ public class Announcement {
         this.contactMethod = contactMethod;
         this.content = content;
         this.title = title;
-    }
-
-    public Announcement() {
     }
 
     public Long getId() {

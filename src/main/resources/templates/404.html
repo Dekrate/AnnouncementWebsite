@@ -10,18 +10,19 @@
 </head>
 <body>
 <header>
-    <h1>Serwis ogłoszeniowy</h1>
-    <h1><a th:href="@{/}">Serwis ogłoszeniowy</a></h1>
+    <h1><a th:href="@{/templates/public}">Serwis ogłoszeniowy</a></h1>
+    <h3>Strona główna</h3>
     <a sec:authorize="!isAuthenticated()" th:href="@{/login}" href="#">Zaloguj się</a>
     <a sec:authorize="!isAuthenticated()" th:href="@{/register}" href="#">Nie masz konta? Utwórz je teraz!</a>
     <p sec:authorize="isAuthenticated()" th:text="|Witaj, ${#authentication.getName()}!|"></p>
-    <!--            <form method="post" th:action="@{/logout}">-->
-    <!--                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>-->
+    <p sec:authorize="isAuthenticated()" th:text="|Twoja rola: ${#authentication.getAuthorities()}|"></p>
+    <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
+    <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
     <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
     <!--            </form>-->
 </header>
 <nav class="navigation" th:remove="all-but-first">
-    <a class="category" th:each="category: ${categories}" th:unless="${categories.isEmpty()}" th:text="${category.name}" th:href="|category?name=${category.id}|" href="#">Praca</a>
+    <a class="category" th:each="category: ${categories}" th:text="${category.name}" th:href="|category?id=${category.id}|" href="#">Praca</a>
     <a href="#" class="category">Zwierzęta</a>
     <a href="#" class="category">Ogólne</a>
     <a href="#" class="category">Sprzedam</a>
@@ -30,6 +31,6 @@
 <hr>
 <h1>404 Error!</h1>
 <h3>Nie znaleziono takiej strony.</h3>
-<a th:href="@{/}" href="/">Powróć na stronę główną.</a>
+<a th:href="@{/templates/public}" href="/templates/public">Powróć na stronę główną.</a>
 </body>
 </html>

@@ -38,8 +38,8 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/add-announcement")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/login")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/register")).anonymous()
-                .requestMatchers(new AntPathRequestMatcher("/not-found")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/403")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                 .anyRequest().permitAll());
         http.exceptionHandling(exceptionHandler -> exceptionHandler
                 .accessDeniedPage("/403"));

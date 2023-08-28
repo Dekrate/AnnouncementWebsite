@@ -2,6 +2,7 @@ package pl.diakowski.announcementwebsite.picture;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import pl.diakowski.announcementwebsite.announcement.Announcement;
 
 @Entity
 public class Picture {
@@ -12,10 +13,14 @@ public class Picture {
     @Column(nullable = false)
     @NotNull
     private String path;
+    @ManyToOne
+    @NotNull
+    private Announcement announcement;
 
-    public Picture(Long id, @NotNull String path) {
+    public Picture(Long id, @NotNull String path, @NotNull Announcement announcement) {
         this.id = id;
         this.path = path;
+        this.announcement = announcement;
     }
 
     public Picture() {
@@ -35,5 +40,13 @@ public class Picture {
 
     public void setPath(@NotNull String path) {
         this.path = path;
+    }
+
+    public @NotNull Announcement getAnnouncement() {
+        return announcement;
+    }
+
+    public void setAnnouncement(@NotNull Announcement announcement) {
+        this.announcement = announcement;
     }
 }

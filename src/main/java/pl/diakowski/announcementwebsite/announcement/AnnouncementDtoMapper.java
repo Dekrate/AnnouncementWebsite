@@ -6,8 +6,6 @@ import pl.diakowski.announcementwebsite.client.ClientDtoMapper;
 import pl.diakowski.announcementwebsite.contactmethod.ContactMethodDtoMapper;
 import pl.diakowski.announcementwebsite.picture.PictureDtoMapper;
 
-import java.util.stream.Collectors;
-
 public class AnnouncementDtoMapper {
     public static AnnouncementDto map(Announcement announcement) {
         return new AnnouncementDto(announcement.getId(),
@@ -17,8 +15,16 @@ public class AnnouncementDtoMapper {
                 announcement.getPublicationTime(),
                 ClientDtoMapper.map(announcement.getAuthor()),
                 ContactMethodDtoMapper.map(announcement.getContactMethod()),
-                announcement.getPictures() // czy on próbuje mapować zbiór do pojedynczego obiektu?
-                        .stream().parallel().map(PictureDtoMapper::map)
-                        .collect(Collectors.toSet()));
+                announcement.getPictures().stream().map(PictureDtoMapper::map).collect(java.util.stream.Collectors.toSet()));
+    }
+
+    public static Announcement map(AnnouncementDto announcementDto) {
+        return new Announcement(announcementDto.getId(),
+                CategoryDtoMapper.map(announcementDto.getCategory()),
+                announcementDto.getPublicationTime(),
+                ClientDtoMapper.map(announcementDto.getAuthor()),
+                ContactMethodDtoMapper.map(announcementDto.getContactMethod()),
+                announcementDto.getContent(),
+                announcementDto.getTitle());
     }
 }
