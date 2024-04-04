@@ -38,6 +38,10 @@ public class Client {
     @JoinColumn
     private ContactMethod contactMethod;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean isActive;
+
     public Long getId() {
         return id;
     }
@@ -108,5 +112,13 @@ public class Client {
 
     public void setClientRoles(HashSet<ClientRole> clientRoles) {
         this.clientRoles = clientRoles;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 }

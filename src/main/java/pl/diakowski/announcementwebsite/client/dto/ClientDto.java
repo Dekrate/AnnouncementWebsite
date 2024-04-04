@@ -10,5 +10,6 @@ public record ClientDto(Long id,
                         String lastName,
                         String email,
                         Set<ClientRoleDto> roles,
-                        ContactMethodDto contactMethodDto) {
+                        ContactMethodDto contactMethodDto,
+                        Boolean isActive) {
 }

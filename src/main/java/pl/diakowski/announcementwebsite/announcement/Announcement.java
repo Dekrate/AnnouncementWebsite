@@ -57,7 +57,9 @@ public class Announcement {
     public Announcement() {
     }
 
-    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime, Client author, @NotNull ContactMethod contactMethod, @NotNull String content, @NotNull String title) {
+    public Announcement(Long id, @NotNull Category category, @NotNull LocalDateTime publicationTime,
+                        Client author, @NotNull ContactMethod contactMethod,
+                        @NotNull String content, @NotNull String title) {
         this.id = id;
         this.category = category;
         this.publicationTime = publicationTime;

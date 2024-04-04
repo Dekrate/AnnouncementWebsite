@@ -24,7 +24,8 @@ public class ClientDtoMapper {
                 client.getClientRoles().stream()
                         .map(ClientDtoMapper::map)
                         .collect(Collectors.toSet()),
-                ContactMethodDtoMapper.map(client.getContactMethod()));
+                ContactMethodDtoMapper.map(client.getContactMethod()),
+                client.getActive());
     }
 
     public static ClientRoleDto map(ClientRole clientRole) {
@@ -41,6 +42,7 @@ public class ClientDtoMapper {
         client.setClientRoles((HashSet<ClientRole>) clientDto.roles().stream()
                 .map(ClientDtoMapper::map)
                 .collect(Collectors.toSet()));
+        client.setActive(clientDto.isActive());
         try {
             client.setContactMethod(ContactMethodDtoMapper.map(clientDto.contactMethodDto()));
         } catch (NullPointerException e) {

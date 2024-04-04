@@ -18,7 +18,6 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientRoleRepository clientRoleRepository;
     private final PasswordEncoder passwordEncoder;
-
     private static final String USER_ROLE_NAME = "USER";
     private static final String ADMIN_ROLE_NAME = "ADMIN";
 
