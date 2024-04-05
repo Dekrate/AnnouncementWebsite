@@ -34,7 +34,18 @@ spring:
     multipart:
       max-file-size: 20MB
       resolve-lazily: true
-
+  mail:
+    host: poczta.interia.pl
+    port: 465
+    username: pai2024@interia.eu
+    password: abcefghi@@@@@
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
 server:
   port: 8080
   error:

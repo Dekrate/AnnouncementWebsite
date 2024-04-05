@@ -172,4 +172,5 @@
     <include file="db/changelog/22-02-changelog.xml"/>
     <include file="db/changelog/23-01-changelog.xml"/>
     <include file="db/changelog/23-02-changelog.xml"/>
+    <include file="db/changelog/04-01-changelog.xml"/>
 </databaseChangeLog>

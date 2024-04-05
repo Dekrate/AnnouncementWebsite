@@ -21,6 +21,8 @@ public class ClientService {
     private static final String USER_ROLE_NAME = "USER";
     private static final String ADMIN_ROLE_NAME = "ADMIN";
 
+
+
     public ClientService(ClientRepository clientRepository,
                          ClientRoleRepository clientRoleRepository,
                          PasswordEncoder passwordEncoder) {
@@ -44,10 +46,12 @@ public class ClientService {
                     //clientRoleRepository.save(new ClientRole(USER_ROLE_NAME));
             throw new NoSuchElementException(String.format("%s not found.", USER_ROLE_NAME));
         });
+        client.setActive(false);
         if (clientRepository.existsByEmail(newClientDto.getEmail())
                 || clientRepository.existsByUsername(newClientDto.getUsername())) {
             throw new EntityExistsException("This account exists!");
         }
+        clientRepository.save(client);
         return ClientDtoMapper.map(client);
     }
 
@@ -81,5 +85,9 @@ public class ClientService {
         return clientRepository.findByUsername(name)
                 .map(ClientDtoMapper::map)
                 .orElseThrow(() -> new ClientNotFoundException("User not found"));
+    }
+
+    public Boolean checkIfClientActive(String username) {
+        return clientRepository.findByUsername(username).map(Client::getActive).orElseThrow();
     }
 }

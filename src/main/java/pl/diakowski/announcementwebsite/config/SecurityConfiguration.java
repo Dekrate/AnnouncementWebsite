@@ -25,6 +25,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry
                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
                 .requestMatchers(new AntPathRequestMatcher("/webjars/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/assets/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/client/**")).authenticated()
@@ -40,6 +41,8 @@ public class SecurityConfiguration {
                 .requestMatchers(new AntPathRequestMatcher("/register")).anonymous()
                 .requestMatchers(new AntPathRequestMatcher("/403")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/activation")).permitAll()
                 .anyRequest().permitAll());
         http.exceptionHandling(exceptionHandler -> exceptionHandler
                 .accessDeniedPage("/403"));

@@ -13,16 +13,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.client.ClientService;
+import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.dto.NewClientDto;
+import pl.diakowski.announcementwebsite.token.TokenService;
+import pl.diakowski.announcementwebsite.web.service.EmailService;
 
 import java.util.NoSuchElementException;
 
 @Controller
 public class RegisterController {
     private final ClientService clientService;
-
-    public RegisterController(ClientService clientService) {
+    private final EmailService emailService;
+    private final TokenService tokenService;
+    public RegisterController(ClientService clientService, EmailService emailService, TokenService tokenService) {
         this.clientService = clientService;
+	    this.emailService = emailService;
+	    this.tokenService = tokenService;
     }
 
 
@@ -38,7 +44,8 @@ public class RegisterController {
     public RedirectView register(HttpSession httpSession, NewClientDto newClientDto, Model model, Errors errors) {
         RedirectView redirectView = new RedirectView();
         try {
-            clientService.addClient(newClientDto);
+            ClientDto clientDto = clientService.addClient(newClientDto);
+            emailService.sendActivationEmail(clientDto.email(), tokenService.createToken(clientDto.id()));
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(new UsernamePasswordAuthenticationToken(newClientDto.getUsername(),
                     newClientDto.getPassword()));
