@@ -25,8 +25,8 @@
 </header>
   <nav class="navigation">
     <a class="category" th:href="@{/client/announcements}" href="#">Moje ogłoszenia</a>
-    <a class="category" th:href="@{/change-password}" href="#">Zmień hasło</a>
-    <a class="category" th:href="@{/contact-method}" href="#">Metoda kontaktu</a>
+    <a class="category" th:href="@{/client/change-password}" href="#">Zmień hasło</a>
+    <a class="category" th:href="@{/client/contact-method}" href="#">Metoda kontaktu</a>
   </nav>
 <hr>
 <main>
@@ -59,7 +59,7 @@
   </div>
 </main>
 <footer>
-  <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" href="#">Panel administratora</a>
+  <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/}" href="#">Panel administratora</a>
   <br />
   &copy; Mikołaj Diakowski
 </footer>

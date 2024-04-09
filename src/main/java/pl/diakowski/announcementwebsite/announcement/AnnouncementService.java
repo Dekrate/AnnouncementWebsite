@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import pl.diakowski.announcementwebsite.announcement.dto.AnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.dto.NewAnnouncementDto;
 import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
@@ -78,14 +77,13 @@ public class AnnouncementService {
     /**
      * Method, which adds an announcement. It is used in add announcement page.
      * @param announcementDto announcement dto
-     * @param pictures pictures
      * @param clientDto client dto
      * @return announcement dto of an added announcement
      * @throws CategoryNotFoundException when category is not found
      * @throws ContactMethodNotFoundException when contact method is not found
      */
     @Transactional
-    public AnnouncementDto addAnnouncement(NewAnnouncementDto announcementDto, MultipartFile[] pictures, ClientDto clientDto)
+    public AnnouncementDto addAnnouncement(NewAnnouncementDto announcementDto, ClientDto clientDto)
             throws CategoryNotFoundException, ContactMethodNotFoundException {
         if (clientDto.contactMethodDto() == null)
             throw new ContactMethodNotFoundException("Contact method not found");

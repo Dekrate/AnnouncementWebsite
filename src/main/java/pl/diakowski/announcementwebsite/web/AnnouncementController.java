@@ -24,6 +24,7 @@ import pl.diakowski.announcementwebsite.picture.PictureService;
 import pl.diakowski.announcementwebsite.picture.exception.PictureTooBigException;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Controller for announcement pages. It is responsible for adding, editing, viewing and deleting announcements.
@@ -64,6 +65,9 @@ public class AnnouncementController {
 		if (banService.checkIfBanned(clientDto)) {
 			model.addAttribute("banned", "Nie możesz dodać ogłoszenia, ponieważ jesteś zbanowany.");
 		}
+		if (clientService.checkIfClientActive(authentication.getName())) {
+			model.addAttribute("active", "Nie możesz dodać ogłoszenia, ponieważ nie aktywowałeś konta.");
+		}
 		model.addAttribute("client", clientDto);
 		if (clientDto.contactMethodDto() == null) { //TODO add contact method
 			model.addAttribute("error", "Najpierw dodaj metodę kontaktu.");
@@ -94,8 +98,10 @@ public class AnnouncementController {
 			return redirectView;
 		}
 		try {
-			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, pictures, clientDto);
-			pictureService.saveOnDisk(pictures, saved);
+			AnnouncementDto saved = announcementService.addAnnouncement(newAnnouncementDto, clientDto);
+			if (!Objects.equals(pictures[0].getOriginalFilename(), "")) {
+				pictureService.saveOnDisk(pictures, saved);
+			}
 			redirectView.setUrl("/announcement?id=" + saved.getId());
 		} catch (CategoryNotFoundException e) {
 			model.addFlashAttribute("error", "Nie znaleziono kategorii.");

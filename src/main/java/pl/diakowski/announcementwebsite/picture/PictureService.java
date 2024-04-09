@@ -29,7 +29,7 @@ public class PictureService {
 	}
 
 	public Set<PictureDto> saveOnDisk(MultipartFile[] pictures, AnnouncementDto saved)
-			throws PictureTooBigException, IOException, IllegalArgumentException {
+			throws IOException, IllegalArgumentException {
 		HashSet<Picture> picturesSet = new HashSet<>();
 		if (pictures.length == 0) {
 			return Set.of();
