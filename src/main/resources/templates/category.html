@@ -27,12 +27,13 @@
 </nav>
 <hr>
 <main>
+  <p th:if="${announcements.size() == 0}" th:text="|Brak ogłoszeń!|"></p>
   <article th:each="announcement: ${announcements}">
     <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
     <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
-    <div class="pictures">
-      <a th:each="picture: ${announcement.pictures}" th:href="@{${picture.path}}"><img th:src="@{${picture.path}}" alt=""/></a>
-    </div>
+<!--    <div class="pictures">-->
+<!--      <a th:each="picture: ${announcement.pictures}" th:href="@{${picture.path}}"><img th:src="@{${picture.path}}" alt=""/></a>-->
+<!--    </div>-->
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
     <p th:utext="${announcement.content}">
       Sprzedam działającego Opla z rocznika 2024 r., w okazyjnej cenie 4000 zł.
@@ -45,12 +46,13 @@
 <!--      <p th:text="${announcement.contactMethod.addressDto.street + ' ' + contactMethod.addressDto.streetNumber + '\n' + contactMethod.addressDto.postcode + ' ' + contactMethod.addressDto.city + '\n' + contactMethod.addressDto.country}">Jan Kowalski <br />ul. Przykładowa 1/1<br />00-001 Warszawa<br/> Polska</p>-->
     </section>
   </article>
-  <div>
-    <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
+  <div th:if="${announcements.size() != 0}">
+
+    <p>Strona <span th:text="${currentPage}"></span> z <span th:text="${pages}"></span> </p>
     <label for="page-dropdown">
-      <select th:remove="all-but-first" id="page-dropdown">
-        <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
-        <option value="2">2</option>
+      <select id="page-dropdown" th:field="*{currentPage}">
+        <option value="" selected>Wybierz stronę</option>
+        <option th:each="page: ${#numbers.sequence(1, pages)}" th:value="${page}" th:text="${page}" th:selected="${currentPage}"></option>
       </select>
     </label>
   </div>
@@ -64,7 +66,7 @@
   let elementById = document.getElementById("page-dropdown");
   elementById.addEventListener("change", function () {
     let page = elementById.value;
-    window.location.href = "/?id=" + new URLSearchParams(window.location.search).get("id") + "&page=" + page;
+    window.location.href = "/category?id=" + new URLSearchParams(window.location.search).get("id") + "&page=" + page;
   });
 </script>
 </body>

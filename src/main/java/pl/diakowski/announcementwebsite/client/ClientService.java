@@ -36,6 +36,10 @@ public class ClientService {
         Client client = new Client();
         if (newClientDto.getUsername().equals("anonymousUser"))
             throw new IllegalArgumentException("It's forbidden to use anonymousUser");
+
+        if (clientRepository.existsByUsername(newClientDto.getUsername())) {
+            throw new EntityExistsException("To konto istnieje!");
+        }
         client.setUsername(newClientDto.getUsername());
         client.setPassword(passwordEncoder.encode(newClientDto.getPassword()));
         client.setEmail(newClientDto.getEmail());
@@ -49,7 +53,7 @@ public class ClientService {
         client.setActive(false);
         if (clientRepository.existsByEmail(newClientDto.getEmail())
                 || clientRepository.existsByUsername(newClientDto.getUsername())) {
-            throw new EntityExistsException("This account exists!");
+            throw new EntityExistsException("To konto istnieje!");
         }
         clientRepository.save(client);
         return ClientDtoMapper.map(client);

@@ -26,33 +26,28 @@
 </nav>
 <a th:href="@{../}">Powróć do strony głównej</a>
 <main>
-    <form action="/admin/add-admin" method="post">
-        <label for="username">
-            <input type="text" id="username" name="username" placeholder="Nazwa użytkownika" required>
-        </label>
-        <br />
-        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
-        <button type="submit">Dodaj administratora</button>
-    </form>
-    <p>Tylko główny administrator może usuwać i dodawać administratorów!</p>
-    <p th:if="${error} != null" th:text="${error}" class="error"></p>
-<!--    <p th:if="${success}" th:text="${success}" class="success"></p>-->
-    <table class="table" th:unless="${admins == null || admins.isEmpty()}">
-        <tr>
-            <th>Identyfikator</th>
-            <th>Nazwa użytkownika</th>
-            <th>Usuń</th>
-        </tr>
-        <tr th:each="admin: ${admins}">
-            <td th:text="${admin.id}"></td>
-            <td th:text="${admin.username}"></td>
-            <td><a th:href="|/admin/remove-admin?id=${admin.id}|" th:text="Usuń"></a></td>
-        </tr>
-    </table>
-    </main>
+    <div>
+        <p style="color: red;" th:text="${error}" th:if="${error != null}"></p>
+        <form action="/admin/add-category" method="post">
+            <label for="name"></label><input type="text" name="name" id="name" required placeholder="Nazwa kategorii">
+            <label for="description"></label><input type="text" name="description" id="description" required placeholder="Opis">
+            <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
+            <button type="submit">Dodaj</button>
+        </form>
+    </div>
+</main>
 
-    <footer>
-        &copy; Mikołaj Diakowski
-    </footer>
-    </body>
+<footer>
+    &copy; Mikołaj Diakowski
+</footer>
+<script type="text/javascript">
+    let elementById = document.getElementById("page-dropdown");
+    elementById.addEventListener("change", function () {
+        let page = elementById.value;
+        window.location.href = "/admin/?page=" + page;
+        if (new URLSearchParams(window.location.search).get("userid") == null)
+            window.location.href+= "&userid=" + page;
+    });
+</script>
+</body>
 </html>

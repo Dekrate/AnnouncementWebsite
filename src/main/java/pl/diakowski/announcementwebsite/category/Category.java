@@ -22,6 +22,11 @@ public class Category {
     public Category() {
     }
 
+    public Category(@NotNull String name, @NotNull String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public Category(Long id, @NotNull String name, @NotNull String description, Set<Announcement> announcements) {
         this.id = id;
         this.name = name;

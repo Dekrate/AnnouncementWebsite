@@ -11,6 +11,7 @@
     <p>Wypełnij poniższy formularz, aby założyć konto!</p>
         <form action="/register" method="post">
         <hr>
+            <p th:text="${error}" class="error-registration"></p>
         <label>
             <p>Nick</p>
             <input type="text" name="username" placeholder="Nazwa użytkownika" required>

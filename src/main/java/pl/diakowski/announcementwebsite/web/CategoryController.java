@@ -43,7 +43,7 @@ public class CategoryController {
             List<AnnouncementDto> announcements = announcementService.findAllByCategoryIdAndPage(id, page);
             model.addAttribute("announcements", announcements);
             model.addAttribute("pages", categoryService.countPages(categoryService.findById(id), 10));
-            model.addAttribute("page", page);
+            model.addAttribute("currentPage", page);
         } catch (NullPointerException e) {
             model.addAttribute("error", "Nie ma takiej kategorii");
         }

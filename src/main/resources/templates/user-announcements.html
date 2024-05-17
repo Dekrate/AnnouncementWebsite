@@ -35,7 +35,7 @@
     <a th:href="|/client/delete-announcement?id=${announcement.id}|">Usuń ogłoszenie</a>
     <a href="#" th:href="|category=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
     <p th:text="|Dodano ${announcement.publicationTime}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
-    <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>
+<!--    <img th:each="picture: ${announcement.pictures}" th:src="@{picture.path}" src="" alt=""/>-->
     <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
     <p th:utext="${announcement.content}">
       Sprzedam działającego Opla z rocznika 2024 r., w okazyjnej cenie 4000 zł.
@@ -51,9 +51,9 @@
   <div>
     <p>Strona <span th:text="${page}"></span> z <span th:text="${pages}"></span> </p>
     <label for="page-dropdown">
-      <select th:remove="all-but-first" id="page-dropdown">
-        <option th:each="page: ${#numbers.sequence(1, pages)} " th:value="${page}">1</option>
-        <option value="2">2</option>
+      <select id="page-dropdown" th:field="*{page}">
+        <option value="" selected>Wybierz stronę</option>
+        <option th:each="page: ${#numbers.sequence(1, pages)}" th:value="${page}" th:text="${page}" th:selected="${currentPage}"></option>
       </select>
     </label>
   </div>

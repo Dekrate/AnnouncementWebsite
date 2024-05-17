@@ -19,6 +19,8 @@
             <a sec:authorize="isAuthenticated()" th:href="@{/add-announcement}" href="#">Dodaj ogłoszenie</a>
             <a sec:authorize="isAuthenticated()" th:text="|Panel użytkownika|" th:href="@{/client}" href="#"></a>
             <a sec:authorize="isAuthenticated()" th:text="|Wyloguj się|" th:href="@{/logout}" href="#"></a>
+            <p th:text="${success}" class="success"></p>
+            <p th:text="${error}" class="success"></p>
 <!--            </form>-->
         </header>
         <nav class="navigation" th:remove="all-but-first">
@@ -33,11 +35,11 @@
             <h3 th:if="${announcements.isEmpty()}">Nie dodano jeszcze żadnych ogłoszeń!</h3>
             <article th:each="announcement: ${announcements}">
                 <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="|/admin/delete-announcement?id=${announcement.id}|" href="#">Usuń ogłoszenie</a>
-                <a href="#" th:href="|category=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
+                <a href="#" th:href="|category?id=${announcement.category.id}|" th:text="${announcement.category.name}">Motoryzacja</a>
                 <p th:text="|Dodano ${#temporals.format(announcement.publicationTime, 'dd MMMM yyyy HH:mm')}|">Dodano 25 października 2023 r. o godzinie 18:24</p>
-                <div class="pictures">
-                    <a th:each="picture: ${announcement.pictures}" th:href="@{${picture.path}}"><img th:src="@{${picture.path}}" alt=""/></a>
-                </div>
+<!--                <div class="pictures">-->
+<!--                    <a th:each="picture: ${announcement.pictures}" th:href="@{${picture.path}}"><img th:src="@{${picture.path}}" alt=""/></a>-->
+<!--                </div>-->
                 <h4 th:text="${announcement.title}">Sprzedam Opla</h4>
                 <p th:utext="${announcement.content}">
                     Sprzedam działającego Opla z rocznika 2024 r., w okazyjnej cenie 4000 zł.

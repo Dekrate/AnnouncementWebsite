@@ -26,33 +26,38 @@
 </nav>
 <a th:href="@{../}">Powróć do strony głównej</a>
 <main>
-    <form action="/admin/add-admin" method="post">
-        <label for="username">
-            <input type="text" id="username" name="username" placeholder="Nazwa użytkownika" required>
-        </label>
-        <br />
-        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
-        <button type="submit">Dodaj administratora</button>
-    </form>
-    <p>Tylko główny administrator może usuwać i dodawać administratorów!</p>
     <p th:if="${error} != null" th:text="${error}" class="error"></p>
-<!--    <p th:if="${success}" th:text="${success}" class="success"></p>-->
-    <table class="table" th:unless="${admins == null || admins.isEmpty()}">
+    <div>
+        <a th:href="@{/admin/add-category}">Dodaj kategorię</a>
+    </div>
+    <p th:if="${categories == null || categories.isEmpty()}" th:text="|Nie ma w systemie żadnych blokad.|"></p>
+
+    <table class="table" th:unless="${categories == null || categories.isEmpty()}">
         <tr>
-            <th>Identyfikator</th>
-            <th>Nazwa użytkownika</th>
+            <th>Nazwa kategorii</th>
+            <th>Opis</th>
+            <th>Edytuj</th>
             <th>Usuń</th>
         </tr>
-        <tr th:each="admin: ${admins}">
-            <td th:text="${admin.id}"></td>
-            <td th:text="${admin.username}"></td>
-            <td><a th:href="|/admin/remove-admin?id=${admin.id}|" th:text="Usuń"></a></td>
+        <tr th:each="category: ${categories}">
+            <td th:text="*{category.name}"></td>
+            <td th:text="*{category.description}"></td>
+            <td><a th:href="|/admin/edit-category?id=${category.id}|" th:text="Edytuj"></a></td>
+            <td><a th:href="|/admin/remove-category?id=${category.id}|" th:text="Usuń"></a></td>
         </tr>
     </table>
-    </main>
-
-    <footer>
-        &copy; Mikołaj Diakowski
-    </footer>
-    </body>
+</main>
+<footer>
+    &copy; Mikołaj Diakowski
+</footer>
+<script type="text/javascript">
+    let elementById = document.getElementById("page-dropdown");
+    elementById.addEventListener("change", function () {
+        let page = elementById.value;
+        window.location.href = "/admin/?page=" + page;
+        if (new URLSearchParams(window.location.search).get("userid") == null)
+            window.location.href+= "&userid=" + page;
+    });
+</script>
+</body>
 </html>

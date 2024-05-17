@@ -53,7 +53,7 @@
             <th>Usuń</th>
         </tr>
         <tr th:each="ban: ${bans}">
-            <td th:text="*{ban.client.name}"></td>
+            <td th:text="*{ban.client.username}"></td>
             <td th:text="*{ban.adminId}"></td>
             <td th:text="${#temporals.format(ban.start, 'dd MMMM yyyy HH:mm')}"></td>
             <td th:text="*{ban.reason}"></td>

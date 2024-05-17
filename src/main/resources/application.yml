@@ -38,7 +38,7 @@ spring:
     host: poczta.interia.pl
     port: 465
     username: pai2024@interia.eu
-    password: abcefghi@@@@@
+    password: abcefghi####
     protocol: smtp
     properties:
       mail:

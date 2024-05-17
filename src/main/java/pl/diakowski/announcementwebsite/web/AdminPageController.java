@@ -17,12 +17,18 @@ import pl.diakowski.announcementwebsite.ban.dto.NewBanDto;
 import pl.diakowski.announcementwebsite.ban.exception.AdminCannotBeBannedException;
 import pl.diakowski.announcementwebsite.ban.exception.BanNotFoundException;
 import pl.diakowski.announcementwebsite.ban.exception.FinishDateIsNotFutureException;
+import pl.diakowski.announcementwebsite.category.CategoryService;
+import pl.diakowski.announcementwebsite.category.dto.CategoryDto;
+import pl.diakowski.announcementwebsite.category.exception.CategoryExistsException;
+import pl.diakowski.announcementwebsite.category.exception.CategoryNotEmptyException;
+import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
 import pl.diakowski.announcementwebsite.client.exception.ClientRoleNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class AdminPageController {
@@ -30,34 +36,36 @@ public class AdminPageController {
 	private final AnnouncementService announcementService;
 	private final BanService banService;
 	private final AdminService adminService; //TODO add, remove admins
+	private final CategoryService categoryService;
 
 	public AdminPageController(ClientService clientService,
 	                           AnnouncementService announcementService,
-	                           BanService banService, AdminService adminService) {
+	                           BanService banService, AdminService adminService, CategoryService categoryService) {
 		this.clientService = clientService;
 		this.announcementService = announcementService;
 		this.banService = banService;
 		this.adminService = adminService;
+		this.categoryService = categoryService;
 	}
 
 	//TODO report system
 
-	/**
-	 * Shows the add-admin page. If the user is not an admin, it redirects to the home page.
-	 *
-	 * @param model Model for the view
-	 * @return "admin" if the user is an admin, "redirect:/" if not
-	 * @since 1.0
-	 */
-	@GetMapping("/admin/add-admin")
-	public String addAdminPage(Model model) {
-		if (adminService.checkIfAdmin())
-			return "add-admin";
-		else {
-			model.addAttribute("error", "Nie jesteś administratorem!");
-			return "redirect:/";
-		}
-	}
+//	/**
+//	 * Shows the add-admin page. If the user is not an admin, it redirects to the home page.
+//	 *
+//	 * @param model Model for the view
+//	 * @return "admin" if the user is an admin, "redirect:/" if not
+//	 * @since 1.0
+//	 */
+//	@GetMapping("/admin/add-admin")
+//	public String addAdminPage(Model model) {
+//		if (adminService.checkIfAdmin())
+//			return "add-admin";
+//		else {
+//			model.addAttribute("error", "Nie jesteś administratorem!");
+//			return "redirect:/";
+//		}
+//	}
 
 	/**
 	 * Adds a client as an admin.
@@ -90,7 +98,7 @@ public class AdminPageController {
 		} catch (ClientAlreadyAdminException e) {
 			model.addFlashAttribute("error", "Ten użytkownik jest już administratorem!");
 		}
-		redirectView.setUrl("/admin/add-admin");
+		redirectView.setUrl("/admin/admins");
 		return redirectView;
 	}
 
@@ -294,20 +302,123 @@ public class AdminPageController {
 		}
 	}
 
-	@GetMapping("/admin/delete-announcement")
-	public RedirectView deleteAnnouncement(@RequestParam Long id, RedirectAttributes attributes) {
+
+	@GetMapping("/admin/categories")
+	public String categoriesPage(Model model) {
+		if (adminService.checkIfAdmin()) {
+			List<CategoryDto> allCategories = adminService.getAllCategories();
+			model.addAttribute("categories", allCategories);
+			return "admin/categories";
+
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@GetMapping("/admin/add-category")
+	public String addCategoryPage(Model model) {
+		if (adminService.checkIfAdmin()) {
+			return "admin/add-category";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@PostMapping("/admin/add-category")
+	public RedirectView addCategory(@RequestParam String name,
+	                                @RequestParam String description,
+	                                RedirectAttributes attributes) {
 		RedirectView redirectView = new RedirectView();
 		redirectView.setHttp10Compatible(false);
 		if (adminService.checkIfAdmin()) {
 			try {
+				adminService.addCategory(name, description);
+				attributes.addFlashAttribute("success", "Kategoria dodana!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (CategoryExistsException e) {
+				attributes.addFlashAttribute("error", "Kategoria już istnieje!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			}
+		} else {
+			redirectView.setUrl("/");
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			return redirectView;
+		}
+	}
 
-				adminService.removeAnnouncementById(id);
-				attributes.addFlashAttribute("success", "Ogłoszenie usunięte!");
-				redirectView.setUrl("/");
+	@GetMapping("/admin/edit-category")
+	public String editCategoryPage(@RequestParam Long id, Model model) {
+		if (adminService.checkIfAdmin()) {
+			try {
+				model.addAttribute("category", categoryService.findById(id));
+			} catch (CategoryNotFoundException e) {
+				model.addAttribute("error", "Brak takiej kategorii!");
+				return "redirect:/admin/categories";
+			}
+			return "admin/edit-category";
+		} else {
+			model.addAttribute("error", "Nie jesteś administratorem!");
+			return "redirect:/";
+		}
+	}
+
+	@PostMapping("/admin/edit-category")
+	public RedirectView editCategory(@RequestParam Long id,
+	                                 @RequestParam String name,
+	                                 @RequestParam String description, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		if (adminService.checkIfAdmin()) {
+			try {
+				adminService.updateCategory(id, name, description);
+				attributes.addFlashAttribute("success", "Edycja zakończona sukcesem!!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (CategoryExistsException e) {
+				attributes.addFlashAttribute("error", "Kategoria już istnieje!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (CategoryNotFoundException e) {
+				attributes.addFlashAttribute("error", "Kategoria nie istnieje!");
+				redirectView.setUrl("/admin/categories");
 				return redirectView;
 			} catch (IllegalArgumentException e) {
 				attributes.addFlashAttribute("error", "Wystąpił błąd!");
-				redirectView.setUrl("/");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			}
+		} else {
+			redirectView.setUrl("/");
+			attributes.addFlashAttribute("error", "Nie jesteś administratorem!");
+			return redirectView;
+		}
+	}
+
+	@GetMapping("/admin/remove-category")
+	public RedirectView removeCategory(@RequestParam Long id, RedirectAttributes attributes) {
+		RedirectView redirectView = new RedirectView();
+		redirectView.setHttp10Compatible(false);
+		if (adminService.checkIfAdmin()) {
+			try {
+				adminService.removeCategoryById(id);
+				attributes.addFlashAttribute("success", "Kategoria usunięta!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (CategoryNotFoundException e) {
+				attributes.addFlashAttribute("error", "Kategoria nie istnieje!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (CategoryNotEmptyException e) {
+				attributes.addFlashAttribute("error", "Kategoria nie jest pusta!");
+				redirectView.setUrl("/admin/categories");
+				return redirectView;
+			} catch (IllegalArgumentException e) {
+				attributes.addFlashAttribute("error", "Wystąpił błąd!");
+				redirectView.setUrl("/admin/categories");
 				return redirectView;
 			}
 		} else {

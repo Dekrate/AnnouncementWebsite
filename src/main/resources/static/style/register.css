@@ -4,3 +4,8 @@ body {
     font-size:12px;
 }
 
+.error-registration {
+    color: red;
+    font-weight: bolder;
+    font-size: 12px;
+}

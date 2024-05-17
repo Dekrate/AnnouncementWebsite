@@ -43,8 +43,8 @@
       <textarea id="content" rows="4" name="content" placeholder="Treść" class="form-control"
                 autocomplete="off"></textarea>
     </div>
-    <label>Dodaj obrazki w formacie jpg lub png<br />
-      <input type="file" name="pictures" accept="image/png, image/jpeg" multiple>
+    <label hidden="hidden">Dodaj obrazki w formacie jpg lub png<br />
+      <input type="file" hidden name="pictures" accept="image/png, image/jpeg" multiple>
     </label>
     <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" hidden>
     <button type="submit">Dodaj</button>

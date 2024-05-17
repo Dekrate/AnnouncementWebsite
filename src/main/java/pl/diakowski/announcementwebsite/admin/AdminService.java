@@ -10,6 +10,13 @@ import pl.diakowski.announcementwebsite.admin.exception.ClientNotAnAdminExceptio
 import pl.diakowski.announcementwebsite.announcement.Announcement;
 import pl.diakowski.announcementwebsite.announcement.AnnouncementRepository;
 import pl.diakowski.announcementwebsite.announcement.exception.AnnouncementNotFoundException;
+import pl.diakowski.announcementwebsite.category.Category;
+import pl.diakowski.announcementwebsite.category.CategoryDtoMapper;
+import pl.diakowski.announcementwebsite.category.CategoryRepository;
+import pl.diakowski.announcementwebsite.category.dto.CategoryDto;
+import pl.diakowski.announcementwebsite.category.exception.CategoryExistsException;
+import pl.diakowski.announcementwebsite.category.exception.CategoryNotEmptyException;
+import pl.diakowski.announcementwebsite.category.exception.CategoryNotFoundException;
 import pl.diakowski.announcementwebsite.client.*;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
 import pl.diakowski.announcementwebsite.client.exception.ClientNotFoundException;
@@ -30,15 +37,17 @@ public class AdminService {
 	private final ClientRoleRepository clientRoleRepository;
 	private final AnnouncementRepository announcementRepository;
 	private final PictureRepository pictureRepository;
+	private final CategoryRepository categoryRepository;
 
 	public AdminService(ClientRepository clientRepository,
 	                    ClientRoleRepository clientRoleRepository,
 	                    AnnouncementRepository announcementRepository,
-	                    PictureRepository pictureRepository) {
+	                    PictureRepository pictureRepository, CategoryRepository categoryRepository) {
 		this.clientRepository = clientRepository;
 		this.clientRoleRepository = clientRoleRepository;
 		this.announcementRepository = announcementRepository;
 		this.pictureRepository = pictureRepository;
+		this.categoryRepository = categoryRepository;
 	}
 
 	/**
@@ -121,5 +130,40 @@ public class AdminService {
 		Announcement announcement = announcementRepository.findById(id).orElseThrow(AnnouncementNotFoundException::new);
 		pictureRepository.deleteAll(pictureRepository.findByAnnouncement(announcement));
 		announcementRepository.deleteById(id);
+	}
+
+	public List<CategoryDto> getAllCategories() {
+		return categoryRepository.findAll().stream().map(CategoryDtoMapper::map).toList();
+	}
+
+	@Transactional
+	public void addCategory(String name, String description) throws CategoryExistsException {
+		if (categoryRepository.existsByNameIgnoreCase(name))
+			throw new CategoryExistsException("Ta kategoria istnieje!");
+		categoryRepository.save(new Category(name, description));
+	}
+
+	@Transactional
+	public void removeCategoryById(Long id) throws CategoryNotFoundException, CategoryNotEmptyException {
+		if (!categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new).getAnnouncements().isEmpty())
+			throw new CategoryNotEmptyException("Kategoria nie jest pusta!");
+		if (!categoryRepository.existsById(id)) {
+			throw new CategoryNotFoundException("Kategoria nie istnieje!");
+		}
+		categoryRepository.deleteById(id);
+	}
+
+	@Transactional
+	public void updateCategory(Long id, String name, String description) throws CategoryExistsException,
+			CategoryNotFoundException {
+		Category category = categoryRepository.findById(id).orElseThrow();
+		category.setName(name);
+		category.setDescription(description);
+		if (!categoryRepository.existsById(id)) {
+			throw new CategoryNotFoundException("Kategoria nie istnieje!");
+		}
+		if (categoryRepository.existsByNameIgnoreCase(name))
+			throw new CategoryExistsException("Ta kategoria istnieje!");
+		categoryRepository.save(category);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.diakowski.announcementwebsite.client.ClientService;
 import pl.diakowski.announcementwebsite.client.dto.ClientDto;
@@ -25,6 +26,7 @@ public class RegisterController {
     private final ClientService clientService;
     private final EmailService emailService;
     private final TokenService tokenService;
+
     public RegisterController(ClientService clientService, EmailService emailService, TokenService tokenService) {
         this.clientService = clientService;
 	    this.emailService = emailService;
@@ -41,7 +43,7 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public RedirectView register(HttpSession httpSession, NewClientDto newClientDto, Model model, Errors errors) {
+    public RedirectView register(HttpSession httpSession, NewClientDto newClientDto, RedirectAttributes model, Errors errors) {
         RedirectView redirectView = new RedirectView();
         try {
             ClientDto clientDto = clientService.addClient(newClientDto);
@@ -51,11 +53,13 @@ public class RegisterController {
                     newClientDto.getPassword()));
             redirectView.setHttp10Compatible(false);
             redirectView.setUrl("/index");
+            model.addFlashAttribute("success", "Konto zostało utworzone! Na podany adres email został wysłany link aktywacyjny.");
             httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
             return redirectView;
         } catch (EntityExistsException | NoSuchElementException e) {
             redirectView.setHttp10Compatible(false);
-            model.addAttribute("error", "An error occurred.");
+            model.addFlashAttribute("error", "To konto już istnieje!");
             redirectView.setUrl("/register");
             return redirectView;
         }

@@ -137,7 +137,7 @@ public class BanService {
 	public Boolean checkIfBanned(ClientDto clientDto) {
 		return banRepository.findAllByClient(ClientDtoMapper.map(clientDto))
 				.stream()
-				.anyMatch(ban -> ban.getFinish().isBefore(LocalDateTime.now()));
+				.anyMatch(ban -> ban.getFinish().isAfter(LocalDateTime.now()));
 	}
 
 	public BanDto getBanById(Long id) throws BanNotFoundException {
