@@ -26,7 +26,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: haslo
           MYSQL_DATABASE: announcement-application
-          MYSQL_USER: root
+          MYSQL_USER: user
           MYSQL_PASSWORD: haslo
 
 
