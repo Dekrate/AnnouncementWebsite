@@ -9,6 +9,6 @@ class AnnouncementWebsiteApplicationTests {
     @Test
     void contextLoads() {
 
-    }
+    }   // test
 
 }
