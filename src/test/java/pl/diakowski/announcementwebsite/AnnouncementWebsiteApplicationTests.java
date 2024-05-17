@@ -8,6 +8,7 @@ class AnnouncementWebsiteApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
