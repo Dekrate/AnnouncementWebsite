@@ -83,8 +83,7 @@ public class AdminService {
 			throws ClientRoleNotFoundException,
 			ClientNotFoundException,
 			ClientAlreadyAdminException {
-		ClientRole adminRole = clientRoleRepository.findByName("ADMIN")
-				.orElseThrow(() -> new ClientRoleNotFoundException("ADMIN role not found"));
+		ClientRole adminRole = clientRoleRepository.findByName("ADMIN").orElseThrow();
 		clientRepository.findByUsername(username)
 				.ifPresentOrElse(client -> {
 					if (client.getClientRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")))
@@ -156,12 +155,9 @@ public class AdminService {
 	@Transactional
 	public void updateCategory(Long id, String name, String description) throws CategoryExistsException,
 			CategoryNotFoundException {
-		Category category = categoryRepository.findById(id).orElseThrow();
+		Category category = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
 		category.setName(name);
 		category.setDescription(description);
-		if (!categoryRepository.existsById(id)) {
-			throw new CategoryNotFoundException("Kategoria nie istnieje!");
-		}
 		if (categoryRepository.existsByNameIgnoreCase(name))
 			throw new CategoryExistsException("Ta kategoria istnieje!");
 		categoryRepository.save(category);

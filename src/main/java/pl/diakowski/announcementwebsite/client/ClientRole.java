@@ -21,6 +21,10 @@ public class ClientRole {
     public ClientRole() {
     }
 
+    public ClientRole(@NotNull String admin) {
+        this.name = admin;
+    }
+
     public Long getId() {
         return id;
     }
